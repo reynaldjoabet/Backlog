@@ -77,11 +77,4 @@ object CookieAuthenticationMiddleware {
       redisService: RedisService[F]
   ): AuthMiddleware[F, T] =
     AuthMiddleware(authenticateUser[F, T](redisService))
-
-  val redis = CatsRedisServiceLive(CatsRedisServiceLive.resource)
-
-  val userAuthMiddleware: AuthMiddleware[IO, User] = apply[IO, User](redis)
-
-  val adminAuthMiddleware: AuthMiddleware[IO, User] = apply[IO, User](redis)
-
 }
