@@ -5,31 +5,17 @@ import org.http4s._
 import org.http4s.circe.CirceEntityEncoder._
 import org.http4s.dsl.Http4sDsl
 import org.http4s.server.Router
-import org.http4s.server.AuthMiddleware
-import domain.User
-import services.CatsRedisServiceLive._
-import services.CatsRedisServiceLive
-import cats.effect._
-import middleware.CookieAuthenticationMiddleware
-final case class HealthRoutes(
-) extends Http4sDsl[IO] {
+final case class HealthRoutes[F[_]: Monad](
+) extends Http4sDsl[F] {
 
   private[routes] val prefixPath = "/healthcheck"
 
-  private val httpRoutes: AuthedRoutes[User, IO] = AuthedRoutes.of[User, IO] {
-    case GET -> Root as user =>
-      Ok()
+  private val httpRoutes: HttpRoutes[F] = HttpRoutes.of[F] { case GET -> Root =>
+    Ok()
   }
 
-  def routes(authMiddleware: AuthMiddleware[IO, User]): HttpRoutes[IO] = Router(
-    "path" -> authMiddleware(httpRoutes)
+  val routes: HttpRoutes[F] = Router(
+    prefixPath -> httpRoutes
   )
-
-  val redis = CatsRedisServiceLive(CatsRedisServiceLive.resource)
-
-  val userAuthMiddleware: AuthMiddleware[IO, User] =
-    CookieAuthenticationMiddleware[IO, User](redis)
-
-  val route: HttpRoutes[IO] = routes(userAuthMiddleware)
 
 }
