@@ -14,3 +14,7 @@ maxAge = None,
 the csrf cookie is a session cookie as both the expires and maxAge are None. firefox indicates it as Session
 
 `git fetch origin` fetches all remote branches
+
+`git checkout -b routes origin/routes` is used to create a local branch based of the remote branch
+branch 'routes' set up to track 'origin/routes'.
+Switched to a new branch 'routes'
