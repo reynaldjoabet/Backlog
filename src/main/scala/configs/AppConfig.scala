@@ -9,7 +9,7 @@ final case class AppConfig(
     tokenConfig: TokenConfig,
     emailServiceConfig: EmailServiceConfig,
     stripeConfig: StripeConfig,
-    redisConfig: RedisConfiguration
+    redisConfig: RedisConfig
 )
 
 object AppConfig {
