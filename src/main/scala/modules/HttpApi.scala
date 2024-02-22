@@ -89,6 +89,7 @@ sealed abstract class HttpApi[F[_]: Async] private (
     .map(builder =>
       builder
         // .withCookieName(cookieName)
+
         // .withCookieDomain(Some("localhost"))
         .withCookiePath(Some("/"))
         .withCookieSecure(false)
@@ -97,11 +98,22 @@ sealed abstract class HttpApi[F[_]: Async] private (
           false
         )
         // The CSRF token cookie must not have httpOnly flag,
+        .withCookieDomain(Some("localhost"))
+        .withCookiePath(Some("/"))
+        .withCookieSecure(true) // defaults to false
+        .withCookieHttpOnly(
+          true
+        ) // The CSRF token cookie must not have httpOnly flag,
+
         // defaults to true
         .withCookieName(
           "__HOST-CSRF-TOKEN"
         ) // sent only to this host, no subdomains
+
         .build // the length of this cookie is 119
+
+        .build
+
         .validate()
     )
     .toResource
@@ -118,12 +130,20 @@ sealed abstract class HttpApi[F[_]: Async] private (
 
   private val loggers: HttpApp[F] => HttpApp[F] = {
     { http: HttpApp[F] =>
+
       RequestLogger.httpApp(true, true, _ => false)(http)
     } andThen { http: HttpApp[F] =>
       ResponseLogger.httpApp(true, true, _ => false)(http)
     }
   }
   val routes: HttpRoutes[F] = healthRoutes
+
+      RequestLogger.httpApp(true, true)(http)
+    } andThen { http: HttpApp[F] =>
+      ResponseLogger.httpApp(true, true)(http)
+    }
+  }
+  val routes: HttpRoutes[F] = ???
   val corsHtppApp: HttpApp[F] = loggers(middleware(routes).orNotFound)
   val crsfHttpApp: Resource[F, HttpApp[F]] = csrfService.map(_(corsHtppApp))
 }

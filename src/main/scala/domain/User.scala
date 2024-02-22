@@ -11,5 +11,5 @@ final case class User(
 )
 
 object User {
-  implicit val userjwtCodec: Codec.AsObject[User] = deriveCodec[User]
+  implicit val userCodec: Codec.AsObject[User] = deriveCodec[User]
 }
