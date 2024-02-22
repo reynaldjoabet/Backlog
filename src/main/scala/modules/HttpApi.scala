@@ -111,9 +111,6 @@ sealed abstract class HttpApi[F[_]: Async] private (
         ) // sent only to this host, no subdomains
 
         .build // the length of this cookie is 119
-
-        .build
-
         .validate()
     )
     .toResource
@@ -138,12 +135,6 @@ sealed abstract class HttpApi[F[_]: Async] private (
   }
   val routes: HttpRoutes[F] = healthRoutes
 
-      RequestLogger.httpApp(true, true)(http)
-    } andThen { http: HttpApp[F] =>
-      ResponseLogger.httpApp(true, true)(http)
-    }
-  }
-  val routes: HttpRoutes[F] = ???
   val corsHtppApp: HttpApp[F] = loggers(middleware(routes).orNotFound)
   val crsfHttpApp: Resource[F, HttpApp[F]] = csrfService.map(_(corsHtppApp))
 }
