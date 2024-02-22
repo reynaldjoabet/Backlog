@@ -8,6 +8,7 @@ import org.http4s.ember.server.EmberServerBuilder
 import services.CatsRedisServiceLive._
 import services.CatsRedisServiceLive
 import modules._
+
 object Main extends IOApp.Simple {
   override def run: IO[Unit] =
     ConfigSource.default.loadF[IO, AppConfig].flatMap {
