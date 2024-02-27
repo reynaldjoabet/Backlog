@@ -23,6 +23,7 @@ import dev.profunktor.redis4cats
 import dev.profunktor.redis4cats.log4cats.log4CatsInstance
 
 import dev.profunktor.redis4cats.log4cats
+import configs.RedisConfig
 
 trait RedisService[F[_]] {
 
@@ -49,8 +50,6 @@ trait RedisService[F[_]] {
 }
 
 object CatsRedisServiceLive {
-  lazy val redisHost: String = "host"
-  lazy val redisPort: Int = 8080 // "port"
   private val stringCodec: RedisCodec[String, String] = RedisCodec.Utf8
 
   private val mkOpts: IO[ClientOptions] =
@@ -70,11 +69,14 @@ object CatsRedisServiceLive {
 
   implicit val logger: Logger[IO] = Slf4jLogger.getLogger[IO]
 
-  val resource: Resource[IO, RedisCommands[IO, String, String]] =
+  def makeRedis(
+      redisConfig: RedisConfig
+  ): Resource[IO, RedisCommands[IO, String, String]] =
     for {
       uri <- Resource.eval(
-        RedisURI.make[IO](s"redis://$redisHost:$redisPort")
-      ) // Redis[IO].utf8(s"redis://${config.redis.password.value}@${config.redis.host}:${config.redis.port}/${config.redis.database}")
+        RedisURI.make[IO](s"redis://${redisConfig.host}:${redisConfig.port}")
+      ) // Redis[IO].utf8(s"redis://${redisConfig.password}@${redisConfig.host}:${redisConfig.port}/${redisConfig.database}")
+      // Redis databases are numbered from 0 -15 and by default, you connect to database 0 when you connect to your redis instance.
       opts <- Resource.eval(mkOpts)
       client <- RedisClient[IO].custom(uri, opts)
       redis <- Redis[IO].fromClient(client, stringCodec)
@@ -82,7 +84,7 @@ object CatsRedisServiceLive {
 
 }
 
-final case class CatsRedisServiceLive(
+final case class CatsRedisServiceLive private (
     redis: Resource[IO, RedisCommands[IO, String, String]]
 )(implicit
     logger: Logger[IO]

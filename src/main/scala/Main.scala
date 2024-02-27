@@ -8,7 +8,7 @@ import org.http4s.ember.server.EmberServerBuilder
 import services.CatsRedisServiceLive._
 import services.CatsRedisServiceLive
 import modules._
-
+import io.circe
 object Main extends IOApp.Simple {
   override def run: IO[Unit] =
     ConfigSource.default.loadF[IO, AppConfig].flatMap {
@@ -23,7 +23,8 @@ object Main extends IOApp.Simple {
           ) =>
         val appResource = for {
           postgres <- Database.makePostgresResource(postgresConfig)
-          services = Services.make(CatsRedisServiceLive.resource, postgres)
+          services = Services
+            .make(CatsRedisServiceLive.makeRedis(redisConfig), postgres)
           httpApp <- HttpApi.make[IO](services).crsfHttpApp
           server <- EmberServerBuilder
             .default[IO]

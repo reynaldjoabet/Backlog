@@ -109,7 +109,6 @@ sealed abstract class HttpApi[F[_]: Async] private (
         .withCookieName(
           "__HOST-CSRF-TOKEN"
         ) // sent only to this host, no subdomains
-
         .build // the length of this cookie is 119
         .validate()
     )
@@ -127,7 +126,6 @@ sealed abstract class HttpApi[F[_]: Async] private (
 
   private val loggers: HttpApp[F] => HttpApp[F] = {
     { http: HttpApp[F] =>
-
       RequestLogger.httpApp(true, true, _ => false)(http)
     } andThen { http: HttpApp[F] =>
       ResponseLogger.httpApp(true, true, _ => false)(http)

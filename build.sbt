@@ -90,3 +90,5 @@ libraryDependencies ++= Seq(
   redis4catsLog4cats,
   pureConfig
 )
+
+ThisBuild / semanticdbEnabled := true

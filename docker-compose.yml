@@ -33,3 +33,9 @@ services:
     restart: always
     ports:
       - "6379:6379"
+  postgres_server:
+    image: postgres
+    container_name: postgres_server
+    restart: always
+    ports:
+      -

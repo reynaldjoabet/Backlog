@@ -7,6 +7,7 @@ import services.RedisService
 import services.CatsRedisServiceLive._
 import cats.effect.IO
 import services.CatsRedisServiceLive
+import org.typelevel.log4cats.Logger
 
 sealed abstract class Services[F[_]] private (
     val redis: RedisService[F]
@@ -20,13 +21,12 @@ sealed abstract class Services[F[_]] private (
 
 //construct the services  here
 object Services {
-  // def make[F[_]: Temporal]
+  // def make[F[_]: Temporal:Logger]
   def make(
       redis: Resource[IO, RedisCommands[IO, String, String]],
       postgres: Resource[IO, Session[IO]]
-      //  cartExpiration: ShoppingCartExpiration
   ): Services[IO] = {
-    new Services[IO](CatsRedisServiceLive(CatsRedisServiceLive.resource)) {}
+    new Services[IO](CatsRedisServiceLive(redis)) {}
   }
 
 }
