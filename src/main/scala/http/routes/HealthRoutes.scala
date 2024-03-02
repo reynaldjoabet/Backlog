@@ -9,9 +9,6 @@ import org.http4s.Response
 import http.responses.syntax._
 import cats.syntax.all._
 import domain.UserID
-import org.http4s.HttpDate
-import java.time.Instant
-import scala.concurrent.duration._
 //import cats.effect.syntax.all._
 import scala.util.Random
 

@@ -15,6 +15,8 @@ import cats.syntax.all._
 
 import cats.effect.syntax.all._
 import cats.data.Kleisli
+import http.controllers.SwaggerDocs
+import org.http4s.server.Middleware
 
 sealed abstract class HttpApi[F[_]: Async] private (
     services: Services[F]
@@ -26,13 +28,6 @@ sealed abstract class HttpApi[F[_]: Async] private (
   private val adminAuthMiddleware: AuthMiddleware[F, User] =
     CookieAuthenticationMiddleware[F, User](services.redis)
 
-// val redis = CatsRedisServiceLive(CatsRedisServiceLive.resource)
-
-//  val userAuthMiddleware: AuthMiddleware[IO, User] =
-//    CookieAuthenticationMiddleware[IO, User](redis)
-
-//  val route: HttpRoutes[IO] = routes(userAuthMiddleware)
-
 // Auth routes
 // private val loginRoutes: HttpRoutes[F]  = LoginRoutes[F](security.auth).routes
 // private val logoutRoutes: HttpRoutes[F] = LogoutRoutes[F](security.auth).routes(usersMiddleware)
@@ -40,6 +35,8 @@ sealed abstract class HttpApi[F[_]: Async] private (
 
 // Open routes
   private val healthRoutes = HealthRoutes[F]().routes
+
+  val swaggerRoute = SwaggerDocs.swaggerRoute
 // private val brandRoutes    = BrandRoutes[F](services.brands).routes
 // private val categoryRoutes = CategoryRoutes[F](services.categories).routes
 // private val itemRoutes     = ItemRoutes[F](services.items).routes
@@ -68,8 +65,8 @@ sealed abstract class HttpApi[F[_]: Async] private (
 //   version.v1            -> openRoutes,
 //   version.v1 + "/admin" -> adminRoutes
 // )
-  val headerName = "X-Csrf-Token" // default
-  val cookieName = "csrf-token" // default
+  private val headerName = "X-Csrf-Token" // default
+  private val cookieName = "csrf-token" // default
 
   private val corsService = CORS.policy
     .withAllowOriginHost(Set("http://localhost:3000"))
@@ -82,7 +79,12 @@ sealed abstract class HttpApi[F[_]: Async] private (
     // The browser will reject any response that includes Access-Control-Allow-Origin=*
     .withAllowHeadersIn(Set(ci"X-Csrf-Token", ci"Content-Type"))
 
-  private def csrfService = CSRF
+  // curl -v XPOST http://localhost:8080/user -H "Origin:http//localhost" -H "X-Csrf-Token:2072583F48A6F7C9A27A9F0441DA012522D9C4D038B2FA3EA7F72376CE473E9C-1709191392115-EA132FDB69B957D9A1FCB0C7375328300E6868BC"  --cookie "csrf-token:2072583F48A6F7C9A27A9F0441DA012522D9C4D038B2FA3EA7F72376CE473E9C-1709191392115-EA132FDB69B957D9A1FCB0C7375328300E6868BC"
+  // curl -v  http://localhost:8080/healthcheck -H "__HOST-CSRF-TOKEN:" -H "csrf-token:"
+  //
+  def csrfService: Resource[F, Middleware[F, Request[F], Response[F], Request[
+    F
+  ], Response[F]]] = CSRF
     .withGeneratedKey[F, F](request =>
       CSRF.defaultOriginCheck(request, "localhost", Uri.Scheme.http, None)
     )
@@ -124,17 +126,18 @@ sealed abstract class HttpApi[F[_]: Async] private (
     }
   }
 
-  private val loggers: HttpApp[F] => HttpApp[F] = {
-    { http: HttpApp[F] =>
-      RequestLogger.httpApp(true, true, _ => false)(http)
-    } andThen { http: HttpApp[F] =>
-      ResponseLogger.httpApp(true, true, _ => false)(http)
+  private val loggers: HttpRoutes[F] => HttpRoutes[F] = {
+    { httpRoutes: HttpRoutes[F] =>
+      RequestLogger.httpRoutes(true, true, _ => false)(httpRoutes)
+    } andThen { httpRoutes: HttpRoutes[F] =>
+      ResponseLogger.httpRoutes(true, true, _ => false)(httpRoutes)
     }
   }
-  val routes: HttpRoutes[F] = healthRoutes
+  private val routes: HttpRoutes[F] = healthRoutes
 
-  val corsHtppApp: HttpApp[F] = loggers(middleware(routes).orNotFound)
-  val crsfHttpApp: Resource[F, HttpApp[F]] = csrfService.map(_(corsHtppApp))
+  val corsHtppRoutes: HttpRoutes[F] = loggers(middleware(routes))
+  val crsfHttpApp: Resource[F, HttpApp[F]] =
+    csrfService.map(_(corsHtppRoutes.orNotFound))
 }
 
 object HttpApi {

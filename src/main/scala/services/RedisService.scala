@@ -3,9 +3,6 @@ package services
 import java.time.Duration
 
 import scala.concurrent.duration._
-
-// import org.bitlap.zim.cache.{JavaDuration, RedisService}
-// import org.bitlap.zim.cache.redis4cats.CatsRedisConfiguration.{redisHost, redisPort}
 import org.typelevel.log4cats.Logger
 import org.typelevel.log4cats.slf4j.Slf4jLogger
 

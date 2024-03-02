@@ -9,7 +9,14 @@ import services.CatsRedisServiceLive._
 import services.CatsRedisServiceLive
 import modules._
 import io.circe
-object Main extends IOApp.Simple {
+import http.routes.PrometheusMeteredRoute
+import http.controllers.SwaggerDocs
+import cats.syntax.all._
+import cats.effect.syntax.all
+import sttp.tapir.server.http4s.Http4sServerInterpreter
+import org.http4s.HttpRoutes
+
+object Application extends IOApp.Simple {
   override def run: IO[Unit] =
     ConfigSource.default.loadF[IO, AppConfig].flatMap {
       case AppConfig(
@@ -25,12 +32,22 @@ object Main extends IOApp.Simple {
           postgres <- Database.makePostgresResource(postgresConfig)
           services = Services
             .make(CatsRedisServiceLive.makeRedis(redisConfig), postgres)
-          httpApp <- HttpApi.make[IO](services).crsfHttpApp
+          httpApi = HttpApi.make[IO](services)
+          httpAp <- httpApi.crsfHttpApp
+          combinedRoutes: HttpRoutes[IO] =
+            SwaggerDocs.swaggerRoute <+> httpApi.corsHtppRoutes <+> Http4sServerInterpreter[IO].toRoutes(SwaggerDocs.allEndpoints)
+
+          prometheusMeteredRoutes <- new PrometheusMeteredRoute[IO](
+            combinedRoutes
+          ).prometheusMeteredRoutes 
+          csrfApp <- httpApi.csrfService
+            .map(_(prometheusMeteredRoutes.orNotFound))
+
           server <- EmberServerBuilder
             .default[IO]
             .withHost(emberConfig.host)
             .withPort(emberConfig.port)
-            .withHttpApp(httpApp)
+            .withHttpApp(csrfApp)
             .build
         } yield server
 

@@ -30,6 +30,9 @@ def ciris(artifact: String): ModuleID = "is.cir" %% artifact % cirisVersion
 def http4s(artifact: String): ModuleID =
   "org.http4s" %% s"http4s-$artifact" % http4sVersion
 
+def tapir(artifact: String) =
+  "com.softwaremill.sttp.tapir" %% s"tapir-${artifact}" % "1.9.10"
+
 val prometheusMetrics = "org.http4s" %% "http4s-prometheus-metrics" % "0.24.6"
 
 val circeGenericExtras = circe("generic-extras")
@@ -63,6 +66,14 @@ val redis4catsLog4cats =
   "dev.profunktor" %% "redis4cats-log4cats" % redis4catsVersion
 val pureConfig = "com.github.pureconfig" %% "pureconfig" % pureConfigVersion
 
+val tapirCore = tapir("core")
+val tapirJsonCirce = tapir("json-circe")
+
+val tapirHttp4sServer = tapir("http4s-server")
+
+//val tapirOpenApiDocs = tapir("openapi-docs")
+val tapirSwagger = tapir("swagger-ui-bundle")
+
 libraryDependencies ++= Seq(
   cirisCore,
   http4sDsl,
@@ -88,7 +99,12 @@ libraryDependencies ++= Seq(
   javaMail,
   redis4cats,
   redis4catsLog4cats,
-  pureConfig
+  pureConfig,
+  tapirCore,
+  tapirJsonCirce,
+  tapirHttp4sServer,
+  tapirSwagger
+  // tapirOpenApiDocs
 )
 
 ThisBuild / semanticdbEnabled := true

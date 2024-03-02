@@ -10,7 +10,10 @@ import javax.crypto.Mac
 object GoogleAuthenticator {
   private[this] val interval = 30.seconds
 
-  def generateTotp(encoded: String, currentTimeMillis: Long): Either[GeneralSecurityException, String] ={
+  def generateTotp(
+      encoded: String,
+      currentTimeMillis: Long
+  ): Either[GeneralSecurityException, String] = {
     val mac = Mac.getInstance("SHA512")
     val passcodeGenerator = OneTimePassword(mac)
     passcodeGenerator.generateOtp(currentTimeMillis / interval.toMillis)
