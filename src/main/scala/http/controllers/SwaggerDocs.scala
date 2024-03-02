@@ -12,31 +12,31 @@ object SwaggerDocs {
   val info: Info = Info("Jira like API", "1.0")
   private val healthController = new HealthController()
 
-  private val accessGroupController = new AccessGroupController()
+  private val accessGroupController = new AccessGroupController[IO]()
 
-  private val durationController = new DurationController()
+  private val durationController = new DurationController[IO]()
 
-  private val emailController = new EmailController()
+  private val emailController = new EmailController[IO]()
 
-  private val epicController = new EpicController()
+  private val epicController = new EpicController[IO]()
 
-  private val issueController = new IssueController()
+  private val issueController = new IssueController[IO]()
 
-  private val issuetypeController = new IssuetypeController()
+  private val issuetypeController = new IssuetypeController[IO]()
 
-  private val priorityController = new PriorityController()
+  private val priorityController = new PriorityController[IO]()
 
-  private val projectController = new ProjectController()
+  private val projectController = new ProjectController[IO]()
 
-  private val sprintController = new SprintController()
+  private val sprintController = new SprintController[IO]()
 
-  private val sprintIssueController = new SprintIssueController()
+  private val sprintIssueController = new SprintIssueController[IO]()
 
-  private val statusController = new StatusController()
+  private val statusController = new StatusController[IO]()
 
-  private val systemUserController = new SystemUserController()
+  private val systemUserController = new SystemUserController[IO]()
 
-  private val teamController = new TeamController()
+  private val teamController = new TeamController[IO]()
 
   val allEndpoints =
     healthController.routes ++ accessGroupController.routes ++ durationController.routes ++ emailController.routes
