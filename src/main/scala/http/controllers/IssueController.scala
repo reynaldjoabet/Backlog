@@ -1,6 +1,8 @@
 package http.controllers
 import cats.effect.IO
 import sttp.tapir.server.ServerEndpoint
-class IssueController() extends BaseController {
+import sttp.tapir.server.http4s.Http4sServerInterpreter
+import cats.effect.kernel.Async
+class IssueController[F[_]: Async]() extends BaseController {
   override val routes: List[ServerEndpoint[Any, IO]] = Nil
 }

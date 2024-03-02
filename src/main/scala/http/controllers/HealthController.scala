@@ -5,6 +5,7 @@ import sttp.tapir.server.ServerEndpoint
 import http.endpoints.HealthEndpoints
 import sttp.tapir._
 import sttp.model.StatusCode
+import sttp.tapir.server.http4s.Http4sServerInterpreter
 
 class HealthController() extends BaseController with HealthEndpoints {
   val health = healthEndpoint
