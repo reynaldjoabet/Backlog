@@ -35,9 +35,8 @@ object Application extends IOApp.Simple {
           httpApi = HttpApi.make[IO](services)
           httpAp <- httpApi.crsfHttpApp
           combinedRoutes: HttpRoutes[IO] =
-            SwaggerDocs.swaggerRoute <+> httpApi.corsHtppRoutes <+> Http4sServerInterpreter[
-              IO
-            ].toRoutes(SwaggerDocs.allEndpoints)
+            SwaggerDocs.swaggerRoute <+> httpApi.corsHtppRoutes // <+> Http4sServerInterpreter[
+          // IO].toRoutes(SwaggerDocs.allEndpoints)
 
           prometheusMeteredRoutes <- new PrometheusMeteredRoute[IO](
             combinedRoutes
