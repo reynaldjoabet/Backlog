@@ -7,14 +7,15 @@ import sttp.model.StatusCode
 trait BaseEndpoints {
 
   // Endpoint[Unit, Unit, Throwable, Unit, Any]
-  val baseEndpoint: Endpoint[Unit, Unit, StatusCode, Unit, Any] =
+  protected val baseEndpoint: Endpoint[Unit, Unit, StatusCode, Unit, Any] =
     endpoint
       .errorOut(statusCode)
   // .errorOut(statusCode and plainBody[String])
   // .mapErrorOut[Throwable](HttpError.decode(_))(HttpError.encode)
 
   // Endpoint[String, Unit, Throwable, Unit, Any]
-  val secureBaseEndpoints: Endpoint[String, Unit, StatusCode, Unit, Any] =
+  protected val secureBaseEndpoints
+      : Endpoint[String, Unit, StatusCode, Unit, Any] =
     baseEndpoint
       .securityIn(auth.bearer[String]())
 

@@ -30,4 +30,12 @@ type MyLambda = ({ type Y[X] = Option[X] })#Y
 // MyLambda is equivalent to Option[_]
 
 val value: MyLambda[Int] = Some(42) // equivalent to Option[Int]
+
 ```
+
+![](Screenshot1.png)
+![](Screenshot2.png)
+![](Screenshot3.png)
+![](Screenshot4.png)
+
+

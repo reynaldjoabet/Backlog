@@ -38,14 +38,19 @@ object SwaggerDocs {
 
   private val teamController = new TeamController[IO]()
 
-  val allEndpoints =
+  val allServerEndpoints =
     healthController.routes ++ accessGroupController.routes ++ durationController.routes ++ emailController.routes
   epicController.routes ++ issueController.routes ++ issuetypeController.routes ++ priorityController.routes ++
     projectController.routes ++ sprintController.routes ++ sprintIssueController.routes ++ statusController.routes ++ systemUserController.routes ++ teamController.routes
 
+  val allEndpoints =
+    healthController.li ++ durationController.li ++
+      epicController.li ++ issueController.li ++ issuetypeController.li ++ priorityController.li ++
+      projectController.li ++ sprintController.li ++ sprintIssueController.li ++ statusController.li ++ systemUserController.li ++ teamController.li
+  // private val swaggerEndpoints: List[ServerEndpoint[Any, IO]] =
+  //   SwaggerInterpreter().fromServerEndpoints(allEndpoints, info)
   private val swaggerEndpoints: List[ServerEndpoint[Any, IO]] =
-    SwaggerInterpreter().fromServerEndpoints(allEndpoints, info)
-
+    SwaggerInterpreter().fromEndpoints(allEndpoints, info)
   val swaggerRoute: HttpRoutes[IO] =
     Http4sServerInterpreter[IO]().toRoutes(swaggerEndpoints)
 }

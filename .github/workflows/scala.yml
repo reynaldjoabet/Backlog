@@ -5,9 +5,7 @@ on:
   pull_request:
     types: [opened, closed,reopened,edited] 
     branches: [ "main" ]
-  push:
-    branches: ["main"] 
-    
+   
 jobs:
   build_sbt:
     name: Build Project
