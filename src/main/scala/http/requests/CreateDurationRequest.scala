@@ -8,6 +8,6 @@ final case class CreateDurationRequest(durationId: Long, duraton: String)
 object CreateDurationRequest {
   implicit val codec: Codec.AsObject[CreateDurationRequest] =
     deriveCodec[CreateDurationRequest]
-  implicit val schema: sttp.tapir.Schema[CreateDurationRequest] =
+  implicit val schema: Schema[CreateDurationRequest] =
     Schema.derived[CreateDurationRequest]
 }

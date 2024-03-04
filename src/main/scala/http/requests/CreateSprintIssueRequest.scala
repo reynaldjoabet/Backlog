@@ -23,6 +23,6 @@ final case class CreateSprintIssueRequest(
 object CreateSprintIssueRequest {
   implicit val codec: Codec.AsObject[CreateSprintIssueRequest] =
     deriveCodec[CreateSprintIssueRequest]
-  implicit val schema: sttp.tapir.Schema[CreateSprintIssueRequest] =
+  implicit val schema: Schema[CreateSprintIssueRequest] =
     Schema.derived[CreateSprintIssueRequest]
 }

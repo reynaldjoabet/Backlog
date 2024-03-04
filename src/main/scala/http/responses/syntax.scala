@@ -12,15 +12,15 @@ object syntax {
 
     def createCookie(sessionId: String) = {
       val cookie = ResponseCookie(
-        name = "COOKIE_NAME" /* jwtCookie  */,
-        content = sessionId /* jwt cookie */,
+        name = "SessionID" /* jwtCookie  */,
+        content = sessionId /* jwt cookie name */,
         expires = None,
         maxAge = Some(1.hour.toSeconds),
         path = Some("/"),
         sameSite = Some(SameSite.Lax),
         secure = false,
         httpOnly = true,
-        domain = Some("localhost")
+        domain = Some(".localhost")
       )
       fa.addCookie(cookie)
     }

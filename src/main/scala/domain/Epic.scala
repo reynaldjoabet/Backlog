@@ -19,5 +19,5 @@ final case class Epic(
 
 object Epic {
   implicit val codec: Codec.AsObject[Epic] = deriveCodec[Epic]
-  implicit val schema: sttp.tapir.Schema[domain.Epic] = Schema.derived[Epic]
+  implicit val schema: Schema[domain.Epic] = Schema.derived[Epic]
 }

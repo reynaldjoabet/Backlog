@@ -9,6 +9,6 @@ final case class Priority(
 
 object Priority {
   implicit val codec: Codec.AsObject[Priority] = deriveCodec[Priority]
-  implicit val schema: sttp.tapir.Schema[domain.Priority] =
+  implicit val schema: Schema[domain.Priority] =
     Schema.derived[Priority]
 }

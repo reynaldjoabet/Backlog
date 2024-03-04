@@ -6,6 +6,8 @@ import sttp.model.StatusCode
 import domain._
 import sttp.tapir.json.circe._
 import http.requests._
+import sttp.capabilities.fs2.Fs2Streams
+import java.nio.charset.StandardCharsets
 trait SprintEndpoints extends BaseEndpoints {
 
   private val base = secureBaseEndpoints
@@ -21,6 +23,15 @@ trait SprintEndpoints extends BaseEndpoints {
   val list = base.get
     .in("sprints")
     .out(jsonBody[List[Sprint]])
+
+  def list1[F[_]] = base.get
+    .in("sprints")
+    .out(
+      streamTextBody(Fs2Streams[F])(
+        CodecFormat.Json(),
+        Option(StandardCharsets.UTF_8)
+      )
+    )
 
   val get = base.get
     .in("sprints")

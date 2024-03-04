@@ -21,6 +21,6 @@ final case class SprintIssue(
 
 object SprintIssue {
   implicit val codec: Codec.AsObject[SprintIssue] = deriveCodec[SprintIssue]
-  implicit val schema: sttp.tapir.Schema[domain.SprintIssue] =
+  implicit val schema: Schema[domain.SprintIssue] =
     Schema.derived[SprintIssue]
 }

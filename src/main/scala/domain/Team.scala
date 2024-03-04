@@ -11,5 +11,5 @@ final case class Team(
 
 object Team {
   implicit val codec: Codec.AsObject[Team] = deriveCodec[Team]
-  implicit val schema: sttp.tapir.Schema[domain.Team] = Schema.derived[Team]
+  implicit val schema: Schema[domain.Team] = Schema.derived[Team]
 }

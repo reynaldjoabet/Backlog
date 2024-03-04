@@ -1,3 +1,3 @@
 package services
 
-trait IssuetypeService[F[_]] {}
+trait IssueTypeService[F[_]] {}

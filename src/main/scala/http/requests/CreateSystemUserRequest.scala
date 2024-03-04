@@ -14,6 +14,6 @@ final case class CreateSystemUserRequest(
 object CreateSystemUserRequest {
   implicit val codec: Codec.AsObject[CreateSystemUserRequest] =
     deriveCodec[CreateSystemUserRequest]
-  implicit val schema: sttp.tapir.Schema[CreateSystemUserRequest] =
+  implicit val schema: Schema[CreateSystemUserRequest] =
     Schema.derived[CreateSystemUserRequest]
 }

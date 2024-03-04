@@ -3,7 +3,7 @@ import cats.Monad
 import org.http4s.dsl.Http4sDsl
 import services._
 final case class IssuetypeRoutes[F[_]: Monad](
-    issuetypeService: IssuetypeService[F]
+    issueTypeService: IssueTypeService[F]
 ) extends Http4sDsl[F] {
   private[routes] val prefixPath = "/api/v4"
 }

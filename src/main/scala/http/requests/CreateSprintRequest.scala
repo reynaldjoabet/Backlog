@@ -20,7 +20,7 @@ object CreateSprintRequest {
     deriveEncoder[CreateSprintRequest]
   implicit val decoder: Decoder[CreateSprintRequest] =
     deriveDecoder[CreateSprintRequest]
-  implicit val schema: sttp.tapir.Schema[CreateSprintRequest] =
+  implicit val schema: Schema[CreateSprintRequest] =
     Schema.derived[CreateSprintRequest]
 
 }

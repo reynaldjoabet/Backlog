@@ -8,7 +8,11 @@ import cats.effect.syntax.all._
 import cats.effect.kernel.Async
 import cats.syntax.all._
 import http.endpoints._
-class TeamController[F[_]: Async]() extends BaseController with TeamEndpoints {
+
+import services._
+class TeamController[F[_]: Async](teamService: TeamService[F])
+    extends BaseController
+    with TeamEndpoints {
 
   // val getRoute=get.serverLogic(_ =>Async[F].delay(()).attempt.map(_.))
 

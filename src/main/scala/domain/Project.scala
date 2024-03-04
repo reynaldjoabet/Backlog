@@ -13,6 +13,6 @@ final case class Project(
 
 object Project {
   implicit val codec: Codec.AsObject[Project] = deriveCodec[Project]
-  implicit val schema: sttp.tapir.Schema[domain.Project] =
+  implicit val schema: Schema[domain.Project] =
     Schema.derived[Project]
 }

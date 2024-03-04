@@ -3,7 +3,7 @@ name: Scala CI
 
 on:
   pull_request:
-    types: [opened, closed,reopened,edited] 
+    types: [opened,reopened,edited] 
     branches: [ "main" ]
    
 jobs:
@@ -45,3 +45,22 @@ jobs:
         jvm: temurin:17
         apps: sbtn  
     - run: sbtn compile               
+  build_client:
+    name: Build Project using sbt -- client(sbtn)
+    strategy:
+      matrix:
+        os: ["ubuntu-latest", "macos-latest"]
+        scala: [2.13.12,3.3.0]
+        java: [temurin@17]
+    runs-on: ${{matrix.os}}
+
+    steps:
+    - uses: actions/checkout@v4
+      with:
+       fetch-depth: 0
+    - uses: coursier/cache-action@v6
+    - uses: VirtusLab/scala-cli-setup@main
+      with:
+        jvm: temurin:17
+        apps: sbt 
+    - run: sbt --client compile               

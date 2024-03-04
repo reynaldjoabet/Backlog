@@ -15,6 +15,6 @@ final case class CreateProjectRequest(
 object CreateProjectRequest {
   implicit val codec: Codec.AsObject[CreateProjectRequest] =
     deriveCodec[CreateProjectRequest]
-  implicit val schema: sttp.tapir.Schema[CreateProjectRequest] =
+  implicit val schema: Schema[CreateProjectRequest] =
     Schema.derived[CreateProjectRequest]
 }

@@ -17,6 +17,6 @@ final case class Sprint(
 object Sprint {
   implicit val encoder: Encoder.AsObject[Sprint] = deriveEncoder[Sprint]
   implicit val decoder: Decoder[Sprint] = deriveDecoder[Sprint]
-  implicit val schema: sttp.tapir.Schema[domain.Sprint] = Schema.derived[Sprint]
+  implicit val schema: Schema[domain.Sprint] = Schema.derived[Sprint]
 
 }

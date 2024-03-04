@@ -9,6 +9,6 @@ final case class IssueType(
 
 object IssueType {
   implicit val codec: Codec.AsObject[IssueType] = deriveCodec[IssueType]
-  implicit val schema: sttp.tapir.Schema[domain.IssueType] =
+  implicit val schema: Schema[domain.IssueType] =
     Schema.derived[IssueType]
 }

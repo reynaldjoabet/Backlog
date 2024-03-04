@@ -13,6 +13,6 @@ final case class CreateTeamRequest(
 object CreateTeamRequest {
   implicit val codec: Codec.AsObject[CreateTeamRequest] =
     deriveCodec[CreateTeamRequest]
-  implicit val schema: sttp.tapir.Schema[CreateTeamRequest] =
+  implicit val schema: Schema[CreateTeamRequest] =
     Schema.derived[CreateTeamRequest]
 }

@@ -11,6 +11,6 @@ final case class CreatePriorityRequest(
 object CreatePriorityRequest {
   implicit val codec: Codec.AsObject[CreatePriorityRequest] =
     deriveCodec[CreatePriorityRequest]
-  implicit val schema: sttp.tapir.Schema[CreatePriorityRequest] =
+  implicit val schema: Schema[CreatePriorityRequest] =
     Schema.derived[CreatePriorityRequest]
 }

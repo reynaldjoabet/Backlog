@@ -11,6 +11,6 @@ final case class CreateStatusRequest(
 object CreateStatusRequest {
   implicit val codec: Codec.AsObject[CreateStatusRequest] =
     deriveCodec[CreateStatusRequest]
-  implicit val schema: sttp.tapir.Schema[CreateStatusRequest] =
+  implicit val schema: Schema[CreateStatusRequest] =
     Schema.derived[CreateStatusRequest]
 }

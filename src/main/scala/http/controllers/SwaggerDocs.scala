@@ -7,36 +7,44 @@ import sttp.apispec.openapi.Info
 import cats.effect
 import sttp.tapir.server.http4s.Http4sServerInterpreter
 import org.http4s.HttpRoutes
-
+import services._
 object SwaggerDocs {
   val info: Info = Info("Jira like API", "1.0")
   private val healthController = new HealthController()
 
   private val accessGroupController = new AccessGroupController[IO]()
 
-  private val durationController = new DurationController[IO]()
+  private val durationController =
+    new DurationController[IO](new DurationService[IO] {})
 
-  private val emailController = new EmailController[IO]()
+  private val emailController = new EmailController[IO](new EmailService[IO] {})
 
-  private val epicController = new EpicController[IO]()
+  private val epicController = new EpicController[IO](new EpicService[IO] {})
 
-  private val issueController = new IssueController[IO]()
+  private val issueController = new IssueController[IO](new IssueService[IO] {})
 
-  private val issuetypeController = new IssuetypeController[IO]()
+  private val issuetypeController =
+    new IssuetypeController[IO](new IssueTypeService[IO] {})
 
-  private val priorityController = new PriorityController[IO]()
+  private val priorityController =
+    new PriorityController[IO](new PriorityService[IO] {})
 
-  private val projectController = new ProjectController[IO]()
+  private val projectController =
+    new ProjectController[IO](new ProjectService[IO] {})
 
-  private val sprintController = new SprintController[IO]()
+  private val sprintController =
+    new SprintController[IO](new SprintService[IO] {})
 
-  private val sprintIssueController = new SprintIssueController[IO]()
+  private val sprintIssueController =
+    new SprintIssueController[IO](new SprintIssueService[IO] {})
 
-  private val statusController = new StatusController[IO]()
+  private val statusController =
+    new StatusController[IO](new StatusService[IO] {})
 
-  private val systemUserController = new SystemUserController[IO]()
+  private val systemUserController =
+    new SystemUserController[IO](new SystemUserService[IO] {})
 
-  private val teamController = new TeamController[IO]()
+  private val teamController = new TeamController[IO](new TeamService[IO] {})
 
   val allServerEndpoints =
     healthController.routes ++ accessGroupController.routes ++ durationController.routes ++ emailController.routes

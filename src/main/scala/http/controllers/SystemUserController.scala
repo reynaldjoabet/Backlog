@@ -4,7 +4,9 @@ import sttp.tapir.server.ServerEndpoint
 import sttp.tapir.server.http4s.Http4sServerInterpreter
 import cats.effect.kernel.Async
 import http.endpoints._
-class SystemUserController[F[_]: Async]()
+import services._
+
+class SystemUserController[F[_]: Async](systemUserService: SystemUserService[F])
     extends BaseController
     with SystemUserEndpoints {
 

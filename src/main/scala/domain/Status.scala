@@ -9,5 +9,5 @@ final case class Status(
 
 object Status {
   implicit val codec: Codec.AsObject[Status] = deriveCodec[Status]
-  implicit val schema: sttp.tapir.Schema[domain.Status] = Schema.derived[Status]
+  implicit val schema: Schema[domain.Status] = Schema.derived[Status]
 }

@@ -6,6 +6,8 @@ import sttp.model.StatusCode
 import domain._
 import sttp.tapir.json.circe._
 import http.requests._
+import sttp.capabilities.fs2.Fs2Streams
+import java.nio.charset.StandardCharsets
 trait SprintIssueEndpoints extends BaseEndpoints {
   private val base = secureBaseEndpoints
     .in("api" / "v3")
@@ -24,6 +26,14 @@ trait SprintIssueEndpoints extends BaseEndpoints {
     .out(jsonBody[SprintIssue])
   val list = base.get
     .out(jsonBody[List[SprintIssue]])
+
+  def list1[F[_]] = base.get
+    .out(
+      streamTextBody(Fs2Streams[F])(
+        CodecFormat.Json(),
+        Option(StandardCharsets.UTF_8)
+      )
+    )
   val delete = base.delete
     .in("sprintissues")
     .in(path[Long]("SprintIssueId"))

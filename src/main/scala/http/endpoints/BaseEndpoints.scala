@@ -19,4 +19,8 @@ trait BaseEndpoints {
     baseEndpoint
       .securityIn(auth.bearer[String]())
 
+  val g = endpoint
+    .in(header[String]("X-Csrf-Token"))
+    .in(cookie[String]("csrf-Token"))
+    .in(cookie[String]("SessionID"))
 }

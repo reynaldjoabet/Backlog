@@ -23,5 +23,5 @@ final case class Issue(
 
 object Issue {
   implicit val codec: Codec.AsObject[domain.Issue] = deriveCodec[Issue]
-  implicit val schema: sttp.tapir.Schema[domain.Issue] = Schema.derived[Issue]
+  implicit val schema: Schema[domain.Issue] = Schema.derived[Issue]
 }

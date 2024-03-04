@@ -21,6 +21,6 @@ final case class CreateEpicRequest(
 object CreateEpicRequest {
   implicit val codec: Codec.AsObject[CreateEpicRequest] =
     deriveCodec[CreateEpicRequest]
-  implicit val schema: sttp.tapir.Schema[CreateEpicRequest] =
+  implicit val schema: Schema[CreateEpicRequest] =
     Schema.derived[CreateEpicRequest]
 }
