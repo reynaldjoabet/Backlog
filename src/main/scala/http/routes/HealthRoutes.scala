@@ -1,6 +1,6 @@
 package http.routes
 
-import cats.Monad
+import cats.effect.Async
 import org.http4s._
 import org.http4s.circe.CirceEntityEncoder.circeEntityEncoder
 import org.http4s.dsl.Http4sDsl
@@ -12,7 +12,7 @@ import domain.UserID
 //import cats.effect.syntax.all._
 import scala.util.Random
 
-final case class HealthRoutes[F[_]: Monad](
+final case class HealthRoutes[F[_]: Async](
 ) extends Http4sDsl[F] {
 
   private[routes] val prefixPath = "/healthcheck"
