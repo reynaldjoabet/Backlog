@@ -29,6 +29,6 @@ final case class SprintIssueRoutes[F[_]: Async](
   }
 
   def routes(authMiddleware: AuthMiddleware[F, User]): HttpRoutes[F] = Router(
-      prefixPath -> authMiddleware(httpRoutes)
-    )
+    prefixPath -> authMiddleware(httpRoutes)
+  )
 }

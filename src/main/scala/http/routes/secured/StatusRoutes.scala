@@ -12,7 +12,7 @@ final case class StatusRoutes[F[_]: Async](statusService: StatusService[F])
     extends Http4sDsl[F] {
   private[routes] val prefixPath = "/api/v8/states"
 
- private val httpRoutes = AuthedRoutes.of[User, F] {
+  private val httpRoutes = AuthedRoutes.of[User, F] {
     case GET -> Root as user => ???
 
     case req @ POST -> Root as user =>
@@ -21,6 +21,6 @@ final case class StatusRoutes[F[_]: Async](statusService: StatusService[F])
   }
 
   def routes(authMiddleware: AuthMiddleware[F, User]): HttpRoutes[F] = Router(
-      prefixPath -> authMiddleware(httpRoutes)
-    )
+    prefixPath -> authMiddleware(httpRoutes)
+  )
 }

@@ -18,7 +18,7 @@ import cats.data.Kleisli
 import http.controllers.SwaggerDocs
 import http.routes.secured._
 import services._
-import  http.routes.version
+import http.routes.version
 import org.http4s.server._
 sealed abstract class HttpApi[F[_]: Async] private (
     services: Services[F]
@@ -45,26 +45,38 @@ sealed abstract class HttpApi[F[_]: Async] private (
 
   // Secured routes
 
-private val durationRoutes=  DurationRoutes( new DurationService[F]{}).routes(userAuthMiddleware)
-private val epicRoutes= EpicRoutes(new EpicService[F] {}).routes(userAuthMiddleware)
+  private val durationRoutes =
+    DurationRoutes(services.durationService).routes(userAuthMiddleware)
+  private val epicRoutes =
+    EpicRoutes(services.epicService).routes(userAuthMiddleware)
 
-private  val issueRoutes= IssueRoutes( new IssueService[F] {}).routes(userAuthMiddleware)
+  private val issueRoutes =
+    IssueRoutes(services.issueService).routes(userAuthMiddleware)
 
-private  val issueTypeRoutes= IssueTypeRoutes( new IssueTypeService[F] {}).routes(userAuthMiddleware)
+  private val issueTypeRoutes =
+    IssueTypeRoutes(services.issueTypeService).routes(userAuthMiddleware)
 
-private val priorityRoutes= PriorityRoutes( new PriorityService[F] {}).routes(userAuthMiddleware)
+  private val priorityRoutes =
+    PriorityRoutes(services.priorityService).routes(userAuthMiddleware)
 
-private val projectRoutes= ProjectRoutes( new ProjectService[F] {}).routes(userAuthMiddleware)
+  private val projectRoutes =
+    ProjectRoutes(services.projectService).routes(userAuthMiddleware)
 
-private val sprintIssueRoutes= SprintIssueRoutes( new SprintIssueService[F] {}).routes(userAuthMiddleware)
-private val sprintRoutes= SprintRoutes(new SprintService[F] {}).routes(userAuthMiddleware)
+  private val sprintIssueRoutes =
+    SprintIssueRoutes(services.sprintIssueService).routes(userAuthMiddleware)
+  private val sprintRoutes =
+    SprintRoutes(services.sprintService).routes(userAuthMiddleware)
 
+  private val statusRoutes =
+    StatusRoutes(services.statusService).routes(userAuthMiddleware)
 
-private val statusRoutes= StatusRoutes( new StatusService[F] {}).routes(userAuthMiddleware)
+  private val systemUserRoutes =
+    SystemUserRoutes(services.systemUserService, services.emailService).routes(
+      userAuthMiddleware
+    )
 
-private val systemUserRoutes= SystemUserRoutes(new SystemUserService[F] {},new EmailService[F] {}).routes(userAuthMiddleware)
-
-private val teamRoutes= TeamRoutes(new TeamService[F] {}).routes(userAuthMiddleware)
+  private val teamRoutes =
+    TeamRoutes(services.teamService).routes(userAuthMiddleware)
 
   // Admin routes
 // private val adminBrandRoutes    = AdminBrandRoutes[F](services.brands).routes(adminMiddleware)
@@ -81,14 +93,13 @@ private val teamRoutes= TeamRoutes(new TeamService[F] {}).routes(userAuthMiddlew
 // private val adminRoutes: HttpRoutes[F] =
 //   adminItemRoutes <+> adminBrandRoutes <+> adminCategoryRoutes
 
+  private val openRoutes: HttpRoutes[F] =
+    healthRoutes <+> epicRoutes <+> issueRoutes <+> issueTypeRoutes <+> priorityRoutes <+> projectRoutes <+> sprintIssueRoutes <+> sprintRoutes <+> statusRoutes <+> systemUserRoutes <+> teamRoutes
 
-private val openRoutes: HttpRoutes[F] =
-  healthRoutes <+>epicRoutes <+>issueRoutes <+>issueTypeRoutes<+>priorityRoutes<+>projectRoutes<+>sprintIssueRoutes<+>sprintRoutes<+>statusRoutes<+>systemUserRoutes<+>teamRoutes
-
- private val routes: HttpRoutes[F] = Router(
-  version.v1            -> openRoutes,
+  private val routes: HttpRoutes[F] = Router(
+    version.v1 -> openRoutes
 //   version.v1 + "/admin" -> adminRoutes
- )
+  )
   private val headerName = "X-Csrf-Token" // default
   private val cookieName = "csrf-token" // default
 

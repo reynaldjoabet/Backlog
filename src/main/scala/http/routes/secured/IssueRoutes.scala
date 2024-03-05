@@ -30,6 +30,6 @@ final case class IssueRoutes[F[_]: Async](issueService: IssueService[F])
       ???
   }
   def routes(authMiddleware: AuthMiddleware[F, User]): HttpRoutes[F] = Router(
-      prefixPath -> authMiddleware(httpRoutes)
-    )
+    prefixPath -> authMiddleware(httpRoutes)
+  )
 }

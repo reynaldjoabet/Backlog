@@ -23,6 +23,6 @@ final case class PriorityRoutes[F[_]: Async](
   }
 
   def routes(authMiddleware: AuthMiddleware[F, User]): HttpRoutes[F] = Router(
-      prefixPath -> authMiddleware(httpRoutes)
-    )
+    prefixPath -> authMiddleware(httpRoutes)
+  )
 }
