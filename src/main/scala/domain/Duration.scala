@@ -6,5 +6,5 @@ final case class Duration(durationId: Long, duraton: String)
 
 object Duration {
   implicit val codec: Codec.AsObject[Duration] = deriveCodec[Duration]
-  implicit val schema = Schema.derived[Duration]
+  implicit val schema: Schema[Duration] = Schema.derived[Duration]
 }

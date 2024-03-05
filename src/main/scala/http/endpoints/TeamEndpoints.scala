@@ -27,7 +27,7 @@ trait TeamEndpoints extends BaseEndpoints {
     .in(jsonBody[CreateTeamRequest]) // .in//Team
     .out(jsonBody[Team])
   val post = base.post
-    .in(path[Long]("id"))
+    // .in(path[Long]("id"))
     .name("Create Team")
     .in(jsonBody[CreateTeamRequest])
     .out(jsonBody[Team])
