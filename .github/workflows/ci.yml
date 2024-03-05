@@ -1,0 +1,31 @@
+
+name: Scala CI
+
+on:
+  pull_request:
+    types: [opened,reopened,edited] 
+    branches: [ "main" ]
+   
+jobs:
+  build_sbt:
+    name: Build Project using sbt with native client
+    strategy:
+      matrix:
+        os: ["ubuntu-latest", "macos-latest"]
+        scala: [2.13.12,3.3.0]
+        java: [temurin@17]
+    runs-on: ${{matrix.os}}
+    env:
+    - SBT_NATIVE_CLIENT: true
+
+    steps:
+    - uses: actions/checkout@v4
+      with:
+       fetch-depth: 0
+    - uses: coursier/cache-action@v6
+    - uses: VirtusLab/scala-cli-setup@main
+      with:
+        jvm: temurin:17
+        apps: sbt 
+    - run: sbt compile
+  

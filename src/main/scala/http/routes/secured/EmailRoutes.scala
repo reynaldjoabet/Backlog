@@ -1,4 +1,4 @@
-package http.routes
+package http.routes.secured
 import cats.effect.Async
 import org.http4s.dsl.Http4sDsl
 import services._

@@ -1,19 +1,20 @@
-package http.routes
+package http.routes.secured
 import cats.effect.Async
 import org.http4s.dsl.Http4sDsl
 import services._
 
 import http.requests._
 import domain._
-import org.http4s.circe.CirceEntityDecoder._
-import org.http4s.server.Router
+import org.http4s.circe.CirceEntityCodec._
+import org.http4s.server._
 import org.http4s.AuthedRoutes
+import org.http4s.HttpRoutes
 
 final case class IssueRoutes[F[_]: Async](issueService: IssueService[F])
     extends Http4sDsl[F] {
   private[routes] val prefixPath = "/api/v1/issues"
 
-  val routes = AuthedRoutes.of[User, F] {
+  private val httpRoutes = AuthedRoutes.of[User, F] {
     case GET -> Root / LongVar(issueId) as user    => ???
     case DELETE -> Root / LongVar(issueId) as user => ???
     case GET -> Root as user                       => ???
@@ -28,4 +29,7 @@ final case class IssueRoutes[F[_]: Async](issueService: IssueService[F])
       req.req.as[CreateIssueRequest]
       ???
   }
+  def routes(authMiddleware: AuthMiddleware[F, User]): HttpRoutes[F] = Router(
+      prefixPath -> authMiddleware(httpRoutes)
+    )
 }

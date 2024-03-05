@@ -4,6 +4,7 @@ import org.http4s.server.Router
 import org.http4s.server.middleware.Metrics
 import cats.effect._
 import org.http4s.HttpRoutes
+
 class PrometheusMeteredRoute[F[_]: Sync](apiService: HttpRoutes[F]) {
 
   val prometheusMeteredRoutes: Resource[F, HttpRoutes[F]] =
