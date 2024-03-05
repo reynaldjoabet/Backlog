@@ -17,7 +17,7 @@ final case class EpicRoutes[F[_]: Async](epicService: EpicService[F])
 
     case DELETE -> Root / LongVar(id) as user => ???
 
-    case GET -> Root  as user => ??? // list
+    case GET -> Root as user => ??? // list
 
     case req @ POST -> Root as user =>
       req.req.as[CreateEpicRequest]
@@ -25,6 +25,6 @@ final case class EpicRoutes[F[_]: Async](epicService: EpicService[F])
   }
 
   def routes(authMiddleware: AuthMiddleware[F, User]): HttpRoutes[F] = Router(
-      prefixPath -> authMiddleware(httpRoutes)
-    )
+    prefixPath -> authMiddleware(httpRoutes)
+  )
 }

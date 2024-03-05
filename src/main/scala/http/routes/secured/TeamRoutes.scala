@@ -12,7 +12,7 @@ final case class TeamRoutes[F[_]: Async](teamService: TeamService[F])
     extends Http4sDsl[F] {
   private[routes] val prefixPath = "/api/v9/teams"
 
- private val httpRoutes = AuthedRoutes.of[User, F] {
+  private val httpRoutes = AuthedRoutes.of[User, F] {
     case GET -> Root / "existing-teams" as user => ??? // list
 
     case req @ POST -> Root as user =>
@@ -28,7 +28,7 @@ final case class TeamRoutes[F[_]: Async](teamService: TeamService[F])
       ???
   }
 
-def routes(authMiddleware: AuthMiddleware[F, User]): HttpRoutes[F] = Router(
+  def routes(authMiddleware: AuthMiddleware[F, User]): HttpRoutes[F] = Router(
     prefixPath -> authMiddleware(httpRoutes)
   )
 }

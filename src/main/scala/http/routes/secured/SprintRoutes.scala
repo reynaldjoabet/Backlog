@@ -26,6 +26,6 @@ final case class SprintRoutes[F[_]: Async](sprintService: SprintService[F])
   }
 
   def routes(authMiddleware: AuthMiddleware[F, User]): HttpRoutes[F] = Router(
-      prefixPath -> authMiddleware(httpRoutes)
-    )
+    prefixPath -> authMiddleware(httpRoutes)
+  )
 }

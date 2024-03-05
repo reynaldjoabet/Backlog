@@ -14,7 +14,7 @@ final case class SystemUserRoutes[F[_]: Async](
 ) extends Http4sDsl[F] {
   private[routes] val prefixPath = "/api/v1/systemusers"
 
-private  val httpRoutes = AuthedRoutes.of[User, F] {
+  private val httpRoutes = AuthedRoutes.of[User, F] {
     case req @ PUT -> Root as user =>
       req.req.as[CreateSystemUserRequest]
       ???
@@ -30,6 +30,6 @@ private  val httpRoutes = AuthedRoutes.of[User, F] {
   }
 
   def routes(authMiddleware: AuthMiddleware[F, User]): HttpRoutes[F] = Router(
-      prefixPath -> authMiddleware(httpRoutes)
-    )
+    prefixPath -> authMiddleware(httpRoutes)
+  )
 }

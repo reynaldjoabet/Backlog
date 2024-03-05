@@ -8,14 +8,23 @@ import services.CatsRedisServiceLive._
 import cats.effect.IO
 import services.CatsRedisServiceLive
 import org.typelevel.log4cats.Logger
+import services._
 
 sealed abstract class Services[F[_]] private (
-    val redis: RedisService[F]
-    // val cart: ShoppingCart[F],
-    // val brands: Brands[F],
-    // val categories: Categories[F],
-    // val items: Items[F],
-    // val orders: Orders[F],
+    val redis: RedisService[F],
+    val durationService: DurationService[F],
+    val emailService: EmailService[F],
+    val epicService: EpicService[F],
+    val issueService: IssueService[F],
+    val issueTypeService: IssueTypeService[F],
+    val sprintIssueService: SprintIssueService[F],
+    val sprintService: SprintService[F],
+    val priorityService: PriorityService[F],
+    val projectService: ProjectService[F],
+    val statusService: StatusService[F],
+    val systemUserService: SystemUserService[F],
+    val teamService: TeamService[F]
+
     // val healthCheck: HealthCheck[F]
 )
 
@@ -26,7 +35,21 @@ object Services {
       redis: Resource[IO, RedisCommands[IO, String, String]],
       postgres: Resource[IO, Session[IO]]
   ): Services[IO] = {
-    new Services[IO](CatsRedisServiceLive(redis)) {}
+    new Services[IO](
+      CatsRedisServiceLive(redis),
+      new DurationService[IO] {},
+      new EmailService[IO] {},
+      new EpicService[IO] {},
+      new IssueService[IO] {},
+      new IssueTypeService[IO] {},
+      new SprintIssueService[IO] {},
+      new SprintService[IO] {},
+      new PriorityService[IO] {},
+      new ProjectService[IO] {},
+      new StatusService[IO] {},
+      new SystemUserService[IO] {},
+      new TeamService[IO] {}
+    ) {}
   }
 
 }

@@ -15,7 +15,7 @@ final case class IssueTypeRoutes[F[_]: Async](
 ) extends Http4sDsl[F] {
   private[routes] val prefixPath = "/api/v4/issuetypes"
 
- private val httpRoutes = AuthedRoutes.of[User, F] {
+  private val httpRoutes = AuthedRoutes.of[User, F] {
     case GET -> Root as user                          => ???
     case GET -> Root / LongVar(sprintIssueId) as user => ???
     case req @ POST -> Root as user =>
@@ -30,6 +30,6 @@ final case class IssueTypeRoutes[F[_]: Async](
   }
 
   def routes(authMiddleware: AuthMiddleware[F, User]): HttpRoutes[F] = Router(
-      prefixPath -> authMiddleware(httpRoutes)
-    )
+    prefixPath -> authMiddleware(httpRoutes)
+  )
 }
