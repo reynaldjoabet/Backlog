@@ -16,7 +16,7 @@ jobs:
         java: [temurin@17]
     runs-on: ${{matrix.os}}
     env:
-    - SBT_NATIVE_CLIENT: true
+      - SBT_NATIVE_CLIENT: true
 
     steps:
     - uses: actions/checkout@v4
