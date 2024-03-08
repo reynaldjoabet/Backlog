@@ -26,6 +26,9 @@ jobs:
     - uses: VirtusLab/scala-cli-setup@main
       with:
         jvm: temurin:17
-        apps: sbt 
+        apps: sbt
+
+    - name: Build Project
+      shell: bash    
     - run: sbt compile
   
