@@ -19,8 +19,10 @@ trait BaseEndpoints {
     baseEndpoint
       .securityIn(auth.bearer[String]())
 
+final case class MyCookie(value:String)
+      //auth.http()
   val g = endpoint
     .in(header[String]("X-Csrf-Token"))
     .in(cookie[String]("csrf-Token"))
-    .in(cookie[String]("SessionID"))
+    .in(cookie[String]("SessionID").map[MyCookie](MyCookie)(_.value))
 }

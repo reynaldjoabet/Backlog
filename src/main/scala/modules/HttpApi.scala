@@ -170,7 +170,7 @@ sealed abstract class HttpApi[F[_]: Async] private (
   }
 
   val corsHtppRoutes: HttpRoutes[F] = loggers(middleware(routes))
-  val crsfHttpApp: Resource[F, HttpApp[F]] =
+  val csrfHttpApp: Resource[F, HttpApp[F]] =
     csrfService.map(_(corsHtppRoutes.orNotFound))
 }
 

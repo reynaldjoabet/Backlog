@@ -120,7 +120,7 @@ final case class CatsRedisServiceLive private (
               SetArg.Ttl.Ex(expireTime.getSeconds.seconds)
             )
           )
-          .map(_ => true)
+          .map(_ => true)// could be removed
     }
 
   override def get[T](

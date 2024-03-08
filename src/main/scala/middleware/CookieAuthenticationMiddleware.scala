@@ -40,7 +40,7 @@ object CookieAuthenticationMiddleware {
   ): Kleisli[({ type Y[X] = OptionT[F, X] })#Y, Request[F], T] = Kleisli {
     req: Request[F] =>
       req.cookies
-        .find(_.name == "cookiename")
+        .find(_.name == "XSESSION")
         .map(_.content) match {
         case Some(cookie) =>
           OptionT[F, T](redisService.get[T](cookie)).flatMap(OptionT.pure[F](_))
