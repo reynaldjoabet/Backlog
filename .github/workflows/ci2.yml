@@ -30,6 +30,8 @@ jobs:
           java-version: 17
           distribution: temurin
           cache: sbt
+       
+       -name : Build Project
         shell: bash
         run: sbt compile 
   

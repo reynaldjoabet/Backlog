@@ -19,6 +19,7 @@ jobs:
       SBT_NATIVE_CLIENT: true
 
     steps:
+    - name: Set up JDK 17 and Sbt
     - uses: actions/checkout@v4
       with:
        fetch-depth: 0
@@ -27,6 +28,7 @@ jobs:
       with:
         jvm: temurin:17
         apps: sbt
-      shell: bash    
-    - run: sbt compile
+
+    - name: Build
+      run: sbt compile
   
