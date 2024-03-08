@@ -52,4 +52,9 @@ prometheus -> graphana
 
 
 
+every step in github actions must define a uses or run key
+
+
+
+
 

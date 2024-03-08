@@ -31,7 +31,7 @@ jobs:
           distribution: temurin
           cache: sbt
        
-       -name : Build Project
+      - name : Build Project
         shell: bash
         run: sbt compile 
   

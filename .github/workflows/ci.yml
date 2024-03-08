@@ -19,11 +19,13 @@ jobs:
       SBT_NATIVE_CLIENT: true
 
     steps:
-    - name: Set up JDK 17 and Sbt
+    - name: Check out repository
     - uses: actions/checkout@v4
       with:
        fetch-depth: 0
+       
     - uses: coursier/cache-action@v6
+
     - uses: VirtusLab/scala-cli-setup@main
       with:
         jvm: temurin:17
