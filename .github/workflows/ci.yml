@@ -27,8 +27,6 @@ jobs:
       with:
         jvm: temurin:17
         apps: sbt
-
-    - name: Build Project
       shell: bash    
     - run: sbt compile
   
