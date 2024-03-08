@@ -30,10 +30,10 @@ object Application extends IOApp.Simple {
           ) =>
         val appResource = for {
           postgres <- Database.makePostgresResource(postgresConfig)
-          services = Services
+          services <- Services
             .make(CatsRedisServiceLive.makeRedis(redisConfig), postgres)
           httpApi = HttpApi.make[IO](services)
-          httpAp <- httpApi.crsfHttpApp
+          httpApp <- httpApi.csrfHttpApp// not needed
           combinedRoutes: HttpRoutes[IO] =
             SwaggerDocs.swaggerRoute <+> httpApi.corsHtppRoutes // <+> Http4sServerInterpreter[
           // IO].toRoutes(SwaggerDocs.allEndpoints)
