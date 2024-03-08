@@ -20,10 +20,10 @@ jobs:
 
     steps:
     - name: Check out repository
-    - uses: actions/checkout@v4
+      uses: actions/checkout@v4
       with:
        fetch-depth: 0
-       
+
     - uses: coursier/cache-action@v6
 
     - uses: VirtusLab/scala-cli-setup@main

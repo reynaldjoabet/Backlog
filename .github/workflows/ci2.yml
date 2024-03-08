@@ -32,6 +32,5 @@ jobs:
           cache: sbt
        
       - name : Build Project
-        shell: bash
         run: sbt compile 
   
