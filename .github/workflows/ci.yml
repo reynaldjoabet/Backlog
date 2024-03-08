@@ -19,13 +19,18 @@ jobs:
       SBT_NATIVE_CLIENT: true
 
     steps:
-    - uses: actions/checkout@v4
+    - name: Check out repository
+      uses: actions/checkout@v4
       with:
        fetch-depth: 0
+
     - uses: coursier/cache-action@v6
+
     - uses: VirtusLab/scala-cli-setup@main
       with:
         jvm: temurin:17
-        apps: sbt 
-    - run: sbt compile
+        apps: sbt
+
+    - name: Build
+      run: sbt compile
   
