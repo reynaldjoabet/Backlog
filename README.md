@@ -54,7 +54,73 @@ prometheus -> graphana
 
 every step in github actions must define a uses or run key
 
+OTel is used for instrumenting, generating, collecting, and exporting telemetry data such as traces, metrics, and logs.for instrumenting, generating, collecting, and exporting telemetry data such as traces, metrics, and logs.
+ OpenTelemetry is focused on the generation, collection, management, and export of telemetry. the storage and visualization of telemetry is intentionally left to other tools.
+ To make a system observable, it must be instrumented. That is, the code must emit traces, metrics, or logs. The instrumented data must then be sent to an observability backend
+Using OpenTelemetry, you can instrument your code in two primary ways:
 
+- Code-based solutions via official APIs and SDKs for most languages
+- Zero-code solutions
+
+
+
+OTEL SDK----->OTLP Exporter---> Jaeger
+                           ---> Otel Collector
+        -----> Zipkin Explorer---> Zipkin
+        -----> Prometheus Exporter ---> Prometheus
+
+
+
+Error handling in tapir is divided into three areas:
+
+    - Error outputs: defined per-endpoint, used for errors handled by the business logic
+
+    - Failed effects: exceptions which are not handled by the server logic (corresponds to 5xx responses)
+
+    - Decode failures: format errors, when the input values can’t be decoded (corresponds to 4xx responses, or trying another endpoint)
+
+
+While 1. is specific to an endpoint, handlers for 2. and 3. are typically the same for multiple endpoints, and are specified as part of the server’s interpreter options.
+
+
+`import sttp.tapir.json.circe._`
+
+
+
+The above import brings into scope the `jsonBody[T]` body input/output description, which creates a codec, given an in-scope circe Encoder/Decoder and a Schema
+
+`import io.circe.Printer`
+
+
+```scala
+object MyTapirJsonCirce extends TapirJsonCirce {
+  override def jsonPrinter: Printer = Printer.spaces2.copy(dropNullValues = true)
+}```
+
+When the client rovides an unsupported paramter or repeats the same paramter multiple times in its requesrs, in both cases the client request is not as expected and should be refused... 400 Bad request
+
+
+```bash
+tar cf targets.tar target project/target
+```
+
+tar: The command-line utility for manipulating tar archives.
+cf: Options to the tar command:
+c: Create a new archive.
+f: Specify the filename of the archive.
+targets.tar: The filename of the archive that will be created.
+target project/target: The directories to be included in the archive. In this case, it includes both the target directory and the project/target directory
+
+
+~/Library/Caches/Coursier/v1/github.com/	virtuslab/scala-cli
+
+
+
+A term closely related to unit tests is code coverage. Code coverage is a metric that gives you an overview of how much of the program is covered with tests
+
+Cached when sbt files are found (any of *.sbt, project/**.scala, project/**.sbt, project/build.properties).
+
+[Code Coverage](https://diamantidis.github.io/2020/05/17/ci-with-github-actions-for-scala-project)
 
 
 

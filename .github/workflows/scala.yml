@@ -44,12 +44,13 @@ jobs:
       with:
         jvm: temurin:17
         apps: sbtn  
-    - run: sbtn compile               
-  build_client:
-    name: Build Project using sbt -- client(sbtn)
+    - run: sbtn compile 
+
+    build_bloop:
+    name: Build Project using bloop
     strategy:
       matrix:
-        os: ["ubuntu-latest", "macos-latest"]
+        os: ["macos-latest"]
         scala: [2.13.13,3.3.3]
         java: [temurin@17]
     runs-on: ${{matrix.os}}
@@ -62,5 +63,45 @@ jobs:
     - uses: VirtusLab/scala-cli-setup@main
       with:
         jvm: temurin:17
+        apps: bloop  
+    - run: bloop compile backlog  
+
+  build_client:
+    name: Build Project using sbt -- client(sbtn)
+    strategy:
+      matrix:
+        os: ["ubuntu-latest", "macos-latest"]
+        #scala: [2.13.13,3.3.3]
+        java: [temurin@17]
+    runs-on: ${{matrix.os}}
+
+    steps:
+    - uses: actions/checkout@v4
+      with:
+       fetch-depth: 0
+    - uses: coursier/cache-action@v6
+    - uses: VirtusLab/scala-cli-setup@main
+      with:
+        jvm: temurin:17
         apps: sbt 
-    - run: sbt --client compile               
+    - run: sbt --client compile 
+    #- name: Perform Build / Test
+     #   run: sbt ++${{ matrix.scala }} clean compile test
+
+
+  #  jobs:
+  # build:
+  #   runs-on: ${{ matrix.OS }}
+  #   strategy:
+  #     matrix:
+  #       OS: ["ubuntu-latest", "macos-latest", "windows-latest"]
+  #   steps:
+  #   - uses: actions/checkout@v3
+  #     with:
+  #       fetch-depth: 0
+  #   - uses: coursier/cache-action@v6.3
+  #   - uses: VirtusLab/scala-cli-setup@v0.1
+  #   - run: scala-cli test .   
+
+# Cached when sbt files are found (any of *.sbt, project/**.scala, project/**.sbt, project/build.properties).
+  # A term closely related to unit tests is code coverage. Code coverage is a metric that gives you an overview of how much of the program is covered with tests        

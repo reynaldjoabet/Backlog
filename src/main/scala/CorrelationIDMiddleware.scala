@@ -1,4 +1,3 @@
-
 import org.http4s._
 import cats.data.OptionT
 
@@ -45,7 +44,6 @@ object CorrelationIDMiddleware {
 //           )
 //     yield res
 
-
 //   val routes: HttpRoutes[IO] = HttpRoutes.of {
 //     case GET -> Root / "hello" => helloHandler
 //     case req @ POST -> Root / "pseudonymize" / "column" =>
@@ -53,4 +51,5 @@ object CorrelationIDMiddleware {
 //   }
 
 //   val httpApp = correlationIdMiddleware(routes).orNotFound
+
 }

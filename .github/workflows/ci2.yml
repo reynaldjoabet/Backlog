@@ -25,12 +25,53 @@ jobs:
           fetch-depth: 0
 
       - name: Set up JDK 17
+        id: setup-java-temurin-17
         uses: actions/setup-java@v4
         with:
           java-version: 17
           distribution: temurin
           cache: sbt
-       
+
+      - name: sbt update
+        if: steps.setup-java-temurin-17.outputs.cache-hit == 'false'
+        run: sbt --client +update  
+
       - name : Build Project
         run: sbt compile 
+
+      #- name: Check code format
+       # run: sbt scalafmtCheckAll
+
+      #- name: Compile
+      #  run: sbt compile
+
+      #- name: Run tests
+       # run: CI=true sbt test
+
+      #- name: Prepare web build
+       # run: sbt web/build 
+
+
+        # - name: Cache sbt
+        # uses: actions/cache@v2
+        # with:
+        #   path: |
+        #     ~/.sbt
+        #     ~/.ivy2/cache
+        #     ~/.coursier/cache/v1
+        #     ~/.cache/coursier/v1 #linux
+        #     ~/AppData/Local/Coursier/Cache/v1 # mac os
+        #     ~/Library/Caches/Coursier/v1
+#         #   key: ${{ runner.os }}-sbt-cache-v2-${{ hashFiles('**/*.sbt') }}-${{ hashFiles('project/build.properties') }}
   
+# - name: Cache SBT
+#   uses: actions/cache@v3
+#   with:
+#     path: |
+#       ~/.ivy2/cache
+#       ~/.sbt
+#     key: ${{ runner.os }}-sbt-${{ hashFiles('**/build.sbt') }}
+
+
+
+# The action setup-java has built-in support for caching artifacts downloaded by sbt when loading the build or when building the project.
