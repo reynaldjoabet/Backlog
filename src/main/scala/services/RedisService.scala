@@ -18,7 +18,8 @@ import dev.profunktor.redis4cats.data.RedisCodec
 import dev.profunktor.redis4cats.effects._
 import dev.profunktor.redis4cats
 import dev.profunktor.redis4cats.log4cats.log4CatsInstance
-
+import cats.effect.implicits.supervisorOps
+import scala.concurrent.ExecutionContext.global
 import dev.profunktor.redis4cats.log4cats
 import configs.RedisConfig
 
@@ -58,7 +59,7 @@ object CatsRedisServiceLive {
         .timeoutOptions(
           TimeoutOptions
             .builder()
-            .fixedTimeout(Duration.ofSeconds(10))
+            .fixedTimeout(Duration.ofSeconds(100))
             .build()
         )
         .build()
@@ -69,7 +70,7 @@ object CatsRedisServiceLive {
   def makeRedis(
       redisConfig: RedisConfig
   ): Resource[IO, RedisCommands[IO, String, String]] =
-    for {
+    (for {
       uri <- Resource.eval(
         RedisURI.make[IO](s"redis://${redisConfig.host}:${redisConfig.port}")
       ) // Redis[IO].utf8(s"redis://${redisConfig.password}@${redisConfig.host}:${redisConfig.port}/${redisConfig.database}")
@@ -77,7 +78,7 @@ object CatsRedisServiceLive {
       opts <- Resource.eval(mkOpts)
       client <- RedisClient[IO].custom(uri, opts)
       redis <- Redis[IO].fromClient(client, stringCodec)
-    } yield redis
+    } yield redis) // .evalOn(global)
 
 }
 
@@ -120,7 +121,7 @@ final case class CatsRedisServiceLive private (
               SetArg.Ttl.Ex(expireTime.getSeconds.seconds)
             )
           )
-          .map(_ => true)// could be removed
+          .map(_ => true) // could be removed
     }
 
   override def get[T](

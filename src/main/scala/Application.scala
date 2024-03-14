@@ -17,6 +17,8 @@ import sttp.tapir.server.http4s.Http4sServerInterpreter
 import org.http4s.HttpRoutes
 
 object Application extends IOApp.Simple {
+
+  override protected def blockedThreadDetectionEnabled = true
   override def run: IO[Unit] =
     ConfigSource.default.loadF[IO, AppConfig].flatMap {
       case AppConfig(
@@ -33,7 +35,7 @@ object Application extends IOApp.Simple {
           services <- Services
             .make(CatsRedisServiceLive.makeRedis(redisConfig), postgres)
           httpApi = HttpApi.make[IO](services)
-          httpApp <- httpApi.csrfHttpApp// not needed
+          httpApp <- httpApi.csrfHttpApp // not needed
           combinedRoutes: HttpRoutes[IO] =
             SwaggerDocs.swaggerRoute <+> httpApi.corsHtppRoutes // <+> Http4sServerInterpreter[
           // IO].toRoutes(SwaggerDocs.allEndpoints)

@@ -3,7 +3,7 @@ import sttp.tapir._
 import sttp.tapir.json.circe._
 //import sttp.tapir.server.http4s._
 import sttp.model.StatusCode
-
+import domain._
 trait BaseEndpoints {
 
   // Endpoint[Unit, Unit, Throwable, Unit, Any]
@@ -19,8 +19,7 @@ trait BaseEndpoints {
     baseEndpoint
       .securityIn(auth.bearer[String]())
 
-final case class MyCookie(value:String)
-      //auth.http()
+  // auth.http()
   val g = endpoint
     .in(header[String]("X-Csrf-Token"))
     .in(cookie[String]("csrf-Token"))

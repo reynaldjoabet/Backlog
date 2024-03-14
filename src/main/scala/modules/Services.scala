@@ -34,24 +34,25 @@ object Services {
   def make(
       redis: Resource[IO, RedisCommands[IO, String, String]],
       postgres: Resource[IO, Session[IO]]
-  ): Resource[IO,Services[IO]]= 
-    Resource.pure(new Services[IO](
-      CatsRedisServiceLive(redis),
-      new DurationService[IO] {},
-      new EmailService[IO] {},
-      new EpicService[IO] {},
-      new IssueService[IO] {},
-      new IssueTypeService[IO] {},
-      new SprintIssueService[IO] {},
-      new SprintService[IO] {},
-      new PriorityService[IO] {},
-      new ProjectService[IO] {},
-      new StatusService[IO] {},
-      new SystemUserService[IO] {},
-      new TeamService[IO] {}
-    ) {}
+  ): Resource[IO, Services[IO]] =
+    Resource.pure(
+      new Services[IO](
+        CatsRedisServiceLive(redis),
+        new DurationService[IO] {},
+        new EmailService[IO] {},
+        new EpicService[IO] {},
+        new IssueService[IO] {},
+        new IssueTypeService[IO] {},
+        new SprintIssueService[IO] {},
+        new SprintService[IO] {},
+        new PriorityService[IO] {},
+        new ProjectService[IO] {},
+        new StatusService[IO] {},
+        new SystemUserService[IO] {},
+        new TeamService[IO] {}
+      ) {}
     )
-  
+
 }
 
 // final class Core[F[_]] private (val jobs: Jobs[F], val users: Users[F], val auth: Auth[F])
