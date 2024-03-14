@@ -46,7 +46,7 @@ jobs:
         apps: sbtn  
     - run: sbtn compile 
 
-    build_bloop:
+  build_bloop:
     name: Build Project using bloop
     strategy:
       matrix:
