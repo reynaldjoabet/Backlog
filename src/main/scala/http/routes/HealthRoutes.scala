@@ -8,7 +8,7 @@ import org.http4s.server.Router
 import org.http4s.Response
 import http.responses.syntax._
 import cats.syntax.all._
-import domain.UserID
+import domain._
 //import cats.effect.syntax.all._
 import scala.util.Random
 
@@ -18,7 +18,7 @@ final case class HealthRoutes[F[_]: Async](
   private[routes] val prefixPath = "/healthcheck"
 
   private val httpRoutes: HttpRoutes[F] = HttpRoutes.of[F] { case GET -> Root =>
-    Ok(new UserID(9, ""))
+    Ok(new UserID(9, "",Set.empty[Role]))
       .map(_.createCookie(Random.alphanumeric.take(120).mkString))
   }
 

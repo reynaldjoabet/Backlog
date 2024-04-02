@@ -65,6 +65,21 @@ object CookieAuthenticationMiddleware {
       }
   }
 
+  private def authenticateUser01[F[_]: Monad](
+      jwtService: JWTService[F]
+  ): Kleisli[({ type Y[X] = OptionT[F, X] })#Y, Request[F], UserID] = Kleisli {
+    req: Request[F] =>
+      req.cookies
+        .find(_.name == "cookiename")
+        .map(_.content) match {
+        case Some(cookie) =>
+          OptionT(jwtService.verifyToken1(cookie)).flatMap(OptionT.pure[F](_))
+           
+        case None => OptionT.none[F, UserID]
+      }
+  }
+
+
   sealed abstract class AuthenticationError
 
   case object UnauthorizedResponse extends AuthenticationError

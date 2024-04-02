@@ -54,7 +54,7 @@ val postgres = "org.postgresql" % "postgresql" % postgresVersion
 val flyway = "org.flywaydb" % "flyway-core" % flywayVersion
 val doobie = "org.tpolecat" %% "doobie-core" % doobieVersion
 val doobie_postgres = "org.tpolecat" %% "doobie-postgres" % doobieVersion
-val logback = "ch.qos.logback" % "logback-classic" % logbackVersion
+val logback = "ch.qos.logback" % "logback-classic" % logbackVersion % Runtime
 
 val skunk = "org.tpolecat" %% "skunk-core" % "1.1.0-M3"
 
@@ -73,6 +73,29 @@ val tapirHttp4sServer = tapir("http4s-server")
 
 //val tapirOpenApiDocs = tapir("openapi-docs")
 val tapirSwagger = tapir("swagger-ui-bundle")
+
+// https://mvnrepository.com/artifact/io.opentelemetry.javaagent/opentelemetry-javaagent-tooling
+//val javaAgentExporter= "io.opentelemetry.javaagent" % "opentelemetry-javaagent-tooling" % "2.2.0-alpha" % "runtime"
+
+
+// https://mvnrepository.com/artifact/io.opentelemetry/opentelemetry-exporter-otlp
+val otlpExporter= "io.opentelemetry" % "opentelemetry-exporter-otlp" % "1.36.0"
+
+// https://mvnrepository.com/artifact/io.opentelemetry/opentelemetry-exporter-jaeger
+val jaegerExporter= "io.opentelemetry" % "opentelemetry-exporter-jaeger" % "1.34.1"
+
+// https://mvnrepository.com/artifact/io.opentelemetry/opentelemetry-exporter-zipkin
+val zipkinExporter= "io.opentelemetry" % "opentelemetry-exporter-zipkin" % "1.36.0"
+
+
+// https://mvnrepository.com/artifact/io.opentelemetry/opentelemetry-exporter-prometheus
+val prometheusExporter= "io.opentelemetry" % "opentelemetry-exporter-prometheus" % "1.36.0-alpha"
+
+val `munit-cats-effect`="org.typelevel" %% "munit-cats-effect-3" % "1.0.7"
+
+val `http4s-munit`= "com.alejandrohdezma" %% "http4s-munit" % "0.15.1" % Test
+
+val `http4s-otel4s`="org.http4s" %% "http4s-otel4s-middleware" % "0.3.0"
 
 libraryDependencies ++= Seq(
   cirisCore,
@@ -108,3 +131,42 @@ libraryDependencies ++= Seq(
 )
 
 ThisBuild / semanticdbEnabled := true
+
+lazy val tests = (project in file("tests"))
+  .configs(IntegrationTest)
+  .settings(Defaults.itSettings)//Create a separate subproject instead of using IntegrationTest and in addition avoid using itSettings",
+    //"1.9.0"
+
+
+    // sbt command-line shortcut
+    addCommandAlias("ci-integration", "Integration/testOnly -- -n integrationTest")
+
+    lazy val IntegrationTest = config("integration").extend(Test)
+
+    //...
+    lazy val tests2 = (project in file("tests2"))
+      .configs(IntegrationTest)
+      .settings(
+        // Exclude integration tests by default (in ScalaTest)
+        Test / testOptions += Tests.Argument(TestFrameworks.ScalaTest, "-l", "integrationTest"),
+        // Include integration tests, by nullifying the above option
+        IntegrationTest / testOptions := Seq.empty,
+     )
+     .settings(
+        // Enable integration tests
+        inConfig(IntegrationTest)(Defaults.testTasks)// Defaults.itSettings
+     )
+
+
+     lazy val integrationtest = (project in file("integrationtest"))
+       .configs(IntegrationTest)
+       .settings(
+         Defaults.itSettings,
+         testFrameworks += new TestFramework("munit.Framework"),
+        //  libraryDependencies ++= Seq(
+        //    "com.scalameta" %% "munit"                       % "0.7.3" % "it,test",
+        //    "com.whisk"     %% "docker-testkit-impl-spotify" % "0.9.9" % "it",
+        //    "com.47deg"     %% "docker-testkit-munit"        % "0.1.0" % "it"
+        //  )
+       )
+      
