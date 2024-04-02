@@ -63,8 +63,9 @@ jobs:
     - uses: VirtusLab/scala-cli-setup@main
       with:
         jvm: temurin:17
-        apps: bloop  
-    - run: bloop compile backlog  
+        apps: bloop  sbt
+    - run: bloopinstall
+      run: bloop compile backlog   
 
   build_client:
     name: Build Project using sbt -- client(sbtn)
@@ -104,4 +105,16 @@ jobs:
   #   - run: scala-cli test .   
 
 # Cached when sbt files are found (any of *.sbt, project/**.scala, project/**.sbt, project/build.properties).
-  # A term closely related to unit tests is code coverage. Code coverage is a metric that gives you an overview of how much of the program is covered with tests        
+  # A term closely related to unit tests is code coverage. Code coverage is a metric that gives you an overview of how much of the program is covered with tests  
+
+
+
+  # - name: Cache dependencies
+  #       uses: actions/cache@v3
+  #       with:
+  #         path: |
+  #           ~/.ivy2/cache
+  #           ~/.sbt
+  #         key: sbt-${{ hashFiles('**/build.sbt') }}
+  #         restore-keys: sbt-
+      

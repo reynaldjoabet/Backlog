@@ -15,9 +15,12 @@ import cats.syntax.all._
 import cats.effect.syntax.all
 import sttp.tapir.server.http4s.Http4sServerInterpreter
 import org.http4s.HttpRoutes
+import org.http4s.metrics.TerminationType
 
+import cats.effect.Trace
 object Application extends IOApp.Simple {
 
+  IOLocal
   override protected def blockedThreadDetectionEnabled = true
   override def run: IO[Unit] =
     ConfigSource.default.loadF[IO, AppConfig].flatMap {
