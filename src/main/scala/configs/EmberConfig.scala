@@ -2,9 +2,9 @@ package configs
 
 import com.comcast.ip4s.Host
 import com.comcast.ip4s.Port
-import pureconfig.ConfigReader
 import pureconfig.error.CannotConvert
 import pureconfig.generic.semiauto.deriveReader
+import pureconfig.ConfigReader
 
 final case class EmberConfig(host: Host, port: Port)
 
@@ -26,17 +26,16 @@ object EmberConfig {
         )
     }
 
-  implicit val portConfigReader: ConfigReader[Port] = ConfigReader[Int].emap {
-    portInt =>
-      Port
-        .fromInt(portInt)
-        .toRight(
-          CannotConvert(
-            portInt.toString,
-            Port.getClass.toString,
-            s"Invalid port number: $portInt"
-          )
+  implicit val portConfigReader: ConfigReader[Port] = ConfigReader[Int].emap { portInt =>
+    Port
+      .fromInt(portInt)
+      .toRight(
+        CannotConvert(
+          portInt.toString,
+          Port.getClass.toString,
+          s"Invalid port number: $portInt"
         )
+      )
   }
 
 }

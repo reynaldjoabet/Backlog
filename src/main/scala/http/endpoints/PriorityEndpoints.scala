@@ -1,29 +1,25 @@
 package http.endpoints
-import sttp.tapir._
-import sttp.tapir.json.circe._
-//import sttp.tapir.server.http4s._
-import sttp.model.StatusCode
+
+import java.nio.charset.StandardCharsets
+
 import domain._
-import sttp.tapir.json.circe._
 import http.requests._
 import sttp.capabilities.fs2.Fs2Streams
-import java.nio.charset.StandardCharsets
+//import sttp.tapir.server.http4s._
+import sttp.model.StatusCode
+import sttp.tapir._
+import sttp.tapir.json.circe._
+
 trait PriorityEndpoints extends BaseEndpoints {
 
-  private val base = secureBaseEndpoints
-    .in("api" / "v5")
-    .tag("Priority")
+  private val base = secureBaseEndpoints.in("api" / "v5").tag("Priority")
 
-  val post = base.post
-    .in("priorities")
-    .in(jsonBody[CreatePriorityRequest])
-    .out(jsonBody[Priority])
+  val post = base.post.in("priorities").in(jsonBody[CreatePriorityRequest]).out(jsonBody[Priority])
 
-  val list = base.get
-    .in("priorities")
-    .out(jsonBody[List[Priority]])
+  val list = base.get.in("priorities").out(jsonBody[List[Priority]])
 
-  def list1[F[_]] = base.get
+  def list1[F[_]] = base
+    .get
     .in("priorities")
     .out(
       streamTextBody(Fs2Streams[F])(
@@ -31,4 +27,5 @@ trait PriorityEndpoints extends BaseEndpoints {
         Option(StandardCharsets.UTF_8)
       )
     )
+
 }

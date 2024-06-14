@@ -5,9 +5,12 @@ import java.io.InputStream
 import java.nio.charset.StandardCharsets
 import java.security.{Key, KeyStore, PrivateKey, Signature}
 import java.security.cert.{Certificate, X509Certificate}
-import javax.crypto.Cipher
+
 import scala.io.Source
+
 import cats.effect._
+
+import javax.crypto.Cipher
 
 object CertApp extends IOApp.Simple {
 
@@ -42,9 +45,9 @@ object CertApp extends IOApp.Simple {
   }
 
   def sign(
-      privateKey: PrivateKey,
-      certificate: X509Certificate,
-      message: Array[Byte]
+    privateKey: PrivateKey,
+    certificate: X509Certificate,
+    message: Array[Byte]
   ): IO[Array[Byte]] = IO {
     val signature: Signature = Signature.getInstance(certificate.getSigAlgName)
     signature.initSign(privateKey)
@@ -53,9 +56,9 @@ object CertApp extends IOApp.Simple {
   }
 
   def verify(
-      certificate: X509Certificate,
-      message: Array[Byte],
-      sig: Array[Byte]
+    certificate: X509Certificate,
+    message: Array[Byte],
+    sig: Array[Byte]
   ): IO[Boolean] = IO {
     val signature: Signature = Signature.getInstance(certificate.getSigAlgName)
     signature.initVerify(certificate)
@@ -64,23 +67,23 @@ object CertApp extends IOApp.Simple {
   }
 
   val run: IO[Unit] = for {
-    ks <- loadKeyStore("/my.keystore", "123456")
-    privateKey = ks.getKey("mycert", "123456".toCharArray)
+    ks         <- loadKeyStore("/my.keystore", "123456")
+    privateKey  = ks.getKey("mycert", "123456".toCharArray)
     certificate = ks.getCertificate("mycert")
-    encrypted <- encrypt(certificate, message)
-    _ <- IO.println(s"encrypted: ${encrypted.hex}")
-    decrypted <- decrypt(privateKey, encrypted)
-    _ <- IO.println(s"decrypted: ${decrypted.utf8}")
+    encrypted  <- encrypt(certificate, message)
+    _          <- IO.println(s"encrypted: ${encrypted.hex}")
+    decrypted  <- decrypt(privateKey, encrypted)
+    _          <- IO.println(s"decrypted: ${decrypted.utf8}")
     _ <- (privateKey, certificate) match {
-      case (sk: PrivateKey, cert: X509Certificate) =>
-        for {
-          signed <- sign(sk, cert, message)
-          _ <- IO.println(s"signature: ${signed.hex}")
-          verified <- verify(cert, message, signed)
-          _ <- IO.println(s"verify: $verified")
-        } yield ()
-      case _ => IO.println("PrivateKey/X509Certificate not match")
-    }
+           case (sk: PrivateKey, cert: X509Certificate) =>
+             for {
+               signed   <- sign(sk, cert, message)
+               _        <- IO.println(s"signature: ${signed.hex}")
+               verified <- verify(cert, message, signed)
+               _        <- IO.println(s"verify: $verified")
+             } yield ()
+           case _ => IO.println("PrivateKey/X509Certificate not match")
+         }
   } yield ()
 
 }

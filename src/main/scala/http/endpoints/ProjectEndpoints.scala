@@ -1,28 +1,25 @@
 package http.endpoints
-import sttp.tapir._
-import sttp.tapir.json.circe._
-//import sttp.tapir.server.http4s._
-import sttp.model.StatusCode
+
+import java.nio.charset.StandardCharsets
+
 import domain._
-import sttp.tapir.json.circe._
 import http.requests._
 import sttp.capabilities.fs2.Fs2Streams
-import java.nio.charset.StandardCharsets
+//import sttp.tapir.server.http4s._
+import sttp.model.StatusCode
+import sttp.tapir._
+import sttp.tapir.json.circe._
+
 trait ProjectEndpoints extends BaseEndpoints {
-  private val base = secureBaseEndpoints
-    .in("api" / "v7")
-    .tag("Projects")
 
-  val post = base.post
-    .in("projects")
-    .in(jsonBody[CreateProjectRequest])
-    .out(jsonBody[Project]) // inProject
+  private val base = secureBaseEndpoints.in("api" / "v7").tag("Projects")
 
-  val list = base.get
-    .in("projects")
-    .out(jsonBody[List[Project]])
+  val post = base.post.in("projects").in(jsonBody[CreateProjectRequest]).out(jsonBody[Project]) // inProject
 
-  def list1[F[_]] = base.get
+  val list = base.get.in("projects").out(jsonBody[List[Project]])
+
+  def list1[F[_]] = base
+    .get
     .in("projects")
     .out(
       streamTextBody(Fs2Streams[F])(
@@ -31,13 +28,13 @@ trait ProjectEndpoints extends BaseEndpoints {
       )
     )
 
-  val delete = base.delete
-    .in("projects")
-    .in(path[Long]("id"))
+  val delete = base.delete.in("projects").in(path[Long]("id"))
 
-  val put = base.delete
+  val put = base
+    .delete
     .in("projects")
     .in(path[Long]("id"))
     .in(jsonBody[CreateProjectRequest])
     .out(jsonBody[Project]) // inProject
+
 }
