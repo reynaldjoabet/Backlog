@@ -1,55 +1,57 @@
 package modules
 
 import cats.effect.kernel._
-import skunk.Session
-import dev.profunktor.redis4cats.RedisCommands
-import services.RedisService
-import services.CatsRedisServiceLive._
 import cats.effect.IO
-import services.CatsRedisServiceLive
+
+import dev.profunktor.redis4cats.RedisCommands
 import org.typelevel.log4cats.Logger
 import services._
+import services.CatsRedisServiceLive
+import services.CatsRedisServiceLive._
+import services.RedisService
+import skunk.Session
 
 sealed abstract class Services[F[_]] private (
-    val redis: RedisService[F],
-    val durationService: DurationService[F],
-    val emailService: EmailService[F],
-    val epicService: EpicService[F],
-    val issueService: IssueService[F],
-    val issueTypeService: IssueTypeService[F],
-    val sprintIssueService: SprintIssueService[F],
-    val sprintService: SprintService[F],
-    val priorityService: PriorityService[F],
-    val projectService: ProjectService[F],
-    val statusService: StatusService[F],
-    val systemUserService: SystemUserService[F],
-    val teamService: TeamService[F]
+  val redis: RedisService[F],
+  val durationService: DurationService[F],
+  val emailService: EmailService[F],
+  val epicService: EpicService[F],
+  val issueService: IssueService[F],
+  val issueTypeService: IssueTypeService[F],
+  val sprintIssueService: SprintIssueService[F],
+  val sprintService: SprintService[F],
+  val priorityService: PriorityService[F],
+  val projectService: ProjectService[F],
+  val statusService: StatusService[F],
+  val systemUserService: SystemUserService[F],
+  val teamService: TeamService[F]
 
-    // val healthCheck: HealthCheck[F]
+  // val healthCheck: HealthCheck[F]
 )
 
 //construct the services  here
 object Services {
+
   // def make[F[_]: Temporal:Logger]
   def make(
-      redis: Resource[IO, RedisCommands[IO, String, String]],
-      postgres: Resource[IO, Session[IO]]
+    redis: Resource[IO, RedisCommands[IO, String, String]],
+    postgres: Resource[IO, Session[IO]]
   ): Resource[IO, Services[IO]] =
     Resource.pure(
       new Services[IO](
         CatsRedisServiceLive(redis),
-        new DurationService[IO] {},
-        new EmailService[IO] {},
-        new EpicService[IO] {},
-        new IssueService[IO] {},
-        new IssueTypeService[IO] {},
+        new DurationService[IO]    {},
+        new EmailService[IO]       {},
+        new EpicService[IO]        {},
+        new IssueService[IO]       {},
+        new IssueTypeService[IO]   {},
         new SprintIssueService[IO] {},
-        new SprintService[IO] {},
-        new PriorityService[IO] {},
-        new ProjectService[IO] {},
-        new StatusService[IO] {},
-        new SystemUserService[IO] {},
-        new TeamService[IO] {}
+        new SprintService[IO]      {},
+        new PriorityService[IO]    {},
+        new ProjectService[IO]     {},
+        new StatusService[IO]      {},
+        new SystemUserService[IO]  {},
+        new TeamService[IO]        {}
       ) {}
     )
 

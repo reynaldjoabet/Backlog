@@ -1,12 +1,12 @@
 package security.codec
 
-import cats.effect.std.Console
 import cats.effect.{Concurrent, IO, IOApp}
+import cats.effect.std.Console
 import cats.syntax.flatMap._
 import cats.syntax.functor._
-import fs2.text.base64
 import fs2.{RaiseThrowable, Stream}
-import fs2.{Pipe, Pure, Stream, hash}
+import fs2.{hash, Pipe, Pure, Stream}
+import fs2.text.base64
 
 object Base64App extends IOApp.Simple {
 
@@ -16,15 +16,15 @@ object Base64App extends IOApp.Simple {
     val b64decodedStream = b64encodedStream.covary[F].through(base64.decode)
     for {
       _ <- Console[F].println(
-        s" -- input: ${input.map(_.toByte).mkString("[", ", ", "]")}"
-      )
+             s" -- input: ${input.map(_.toByte).mkString("[", ", ", "]")}"
+           )
       _ <- Console[F].println(
-        s"encoded: ${b64encodedStream.toList.mkString("")}"
-      )
+             s"encoded: ${b64encodedStream.toList.mkString("")}"
+           )
       decodedList <- b64decodedStream.compile.toList
       _ <- Console[F].println(
-        s"decoded: ${decodedList.mkString("[", ", ", "]")}"
-      )
+             s"decoded: ${decodedList.mkString("[", ", ", "]")}"
+           )
     } yield ()
   }
 
@@ -40,4 +40,5 @@ object Base64App extends IOApp.Simple {
       _ <- demo[IO](0x7f, 0x00)
       _ <- demo[IO](0x00)
     } yield ()
+
 }

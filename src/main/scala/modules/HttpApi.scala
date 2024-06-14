@@ -1,27 +1,29 @@
 package modules
 
-import cats.effect.kernel.Async
-import org.http4s.server.AuthMiddleware
-import cats.effect._
-import domain._
-import middleware.CookieAuthenticationMiddleware
-import org.http4s._
-import org.http4s.server.middleware._
 import scala.concurrent.duration._
-import http.routes._
-import org.http4s.Method._
-import org.typelevel.ci._
+
+import cats.data.Kleisli
+import cats.effect._
+import cats.effect.kernel.Async
+import cats.effect.syntax.all._
 import cats.syntax.all._
 
-import cats.effect.syntax.all._
-import cats.data.Kleisli
+import domain._
 import http.controllers.SwaggerDocs
+import http.routes._
 import http.routes.secured._
-import services._
 import http.routes.version
+import middleware.CookieAuthenticationMiddleware
+import org.http4s._
 import org.http4s.server._
+import org.http4s.server.middleware._
+import org.http4s.server.AuthMiddleware
+import org.http4s.Method._
+import org.typelevel.ci._
+import services._
+
 sealed abstract class HttpApi[F[_]: Async] private (
-    services: Services[F]
+  services: Services[F]
 ) {
 
   private val userAuthMiddleware: AuthMiddleware[F, User] =
@@ -47,6 +49,7 @@ sealed abstract class HttpApi[F[_]: Async] private (
 
   private val durationRoutes =
     DurationRoutes(services.durationService).routes(userAuthMiddleware)
+
   private val epicRoutes =
     EpicRoutes(services.epicService).routes(userAuthMiddleware)
 
@@ -64,6 +67,7 @@ sealed abstract class HttpApi[F[_]: Async] private (
 
   private val sprintIssueRoutes =
     SprintIssueRoutes(services.sprintIssueService).routes(userAuthMiddleware)
+
   private val sprintRoutes =
     SprintRoutes(services.sprintService).routes(userAuthMiddleware)
 
@@ -100,10 +104,12 @@ sealed abstract class HttpApi[F[_]: Async] private (
     version.v1 -> openRoutes
 //   version.v1 + "/admin" -> adminRoutes
   )
-  private val headerName = "X-Csrf-Token" // default
-  private val cookieName = "csrf-token" // default
 
-  private val corsService = CORS.policy
+  private val headerName = "X-Csrf-Token" // default
+  private val cookieName = "csrf-token"   // default
+
+  private val corsService = CORS
+    .policy
     .withAllowOriginHost(Set("http://localhost:3000"))
     .withAllowMethodsIn(Set(POST, PUT, GET, DELETE))
     .withAllowCredentials(
@@ -145,7 +151,7 @@ sealed abstract class HttpApi[F[_]: Async] private (
         // defaults to true
         .withCookieName(
           "__HOST-CSRF-TOKEN"
-        ) // sent only to this host, no subdomains
+        )      // sent only to this host, no subdomains
         .build // the length of this cookie is 119
         .validate()
     )
@@ -154,29 +160,34 @@ sealed abstract class HttpApi[F[_]: Async] private (
   private val middleware: HttpRoutes[F] => HttpRoutes[F] = {
     { http: HttpRoutes[F] =>
       AutoSlash(http)
-    } andThen { http: HttpRoutes[F] =>
-      corsService(http)
-    } andThen { http: HttpRoutes[F] =>
-      Timeout(60.seconds)(http)
-    }
+    }.andThen { http: HttpRoutes[F] =>
+        corsService(http)
+      }
+      .andThen { http: HttpRoutes[F] =>
+        Timeout(60.seconds)(http)
+      }
   }
 
   private val loggers: HttpRoutes[F] => HttpRoutes[F] = {
     { httpRoutes: HttpRoutes[F] =>
       RequestLogger.httpRoutes(true, true, _ => false)(httpRoutes)
-    } andThen { httpRoutes: HttpRoutes[F] =>
+    }.andThen { httpRoutes: HttpRoutes[F] =>
       ResponseLogger.httpRoutes(true, true, _ => false)(httpRoutes)
     }
   }
 
   val corsHtppRoutes: HttpRoutes[F] = loggers(middleware(routes))
+
   val csrfHttpApp: Resource[F, HttpApp[F]] =
     csrfService.map(_(corsHtppRoutes.orNotFound))
+
 }
 
 object HttpApi {
+
   def make[F[_]: Async](
-      services: Services[F]
+    services: Services[F]
   ): HttpApi[F] =
     new HttpApi[F](services) {}
+
 }

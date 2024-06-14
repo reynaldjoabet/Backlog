@@ -1,15 +1,19 @@
 package http.controllers
-import sttp.tapir.docs.openapi.OpenAPIDocsInterpreter
-import cats.effect.IO
-import sttp.tapir.swagger.bundle.SwaggerInterpreter
-import sttp.tapir.server.ServerEndpoint
-import sttp.apispec.openapi.Info
+
 import cats.effect
-import sttp.tapir.server.http4s.Http4sServerInterpreter
+import cats.effect.IO
+
 import org.http4s.HttpRoutes
 import services._
+import sttp.apispec.openapi.Info
+import sttp.tapir.docs.openapi.OpenAPIDocsInterpreter
+import sttp.tapir.server.http4s.Http4sServerInterpreter
+import sttp.tapir.server.ServerEndpoint
+import sttp.tapir.swagger.bundle.SwaggerInterpreter
+
 object SwaggerDocs {
-  val info: Info = Info("Jira like API", "1.0")
+
+  val info: Info               = Info("Jira like API", "1.0")
   private val healthController = new HealthController()
 
   private val accessGroupController = new AccessGroupController[IO]()
@@ -47,18 +51,26 @@ object SwaggerDocs {
   private val teamController = new TeamController[IO](new TeamService[IO] {})
 
   val allServerEndpoints =
-    healthController.routes ++ accessGroupController.routes ++ durationController.routes ++ emailController.routes
-  epicController.routes ++ issueController.routes ++ issuetypeController.routes ++ priorityController.routes ++
-    projectController.routes ++ sprintController.routes ++ sprintIssueController.routes ++ statusController.routes ++ systemUserController.routes ++ teamController.routes
+    healthController.routes ++ accessGroupController.routes ++ durationController
+      .routes ++ emailController.routes
+
+  epicController.routes ++ issueController.routes ++ issuetypeController
+    .routes ++ priorityController.routes ++
+    projectController.routes ++ sprintController.routes ++ sprintIssueController
+      .routes ++ statusController.routes ++ systemUserController.routes ++ teamController.routes
 
   val allEndpoints =
     healthController.li ++ durationController.li ++
       epicController.li ++ issueController.li ++ issuetypeController.li ++ priorityController.li ++
-      projectController.li ++ sprintController.li ++ sprintIssueController.li ++ statusController.li ++ systemUserController.li ++ teamController.li
+      projectController.li ++ sprintController.li ++ sprintIssueController.li ++ statusController
+        .li ++ systemUserController.li ++ teamController.li
+
   // private val swaggerEndpoints: List[ServerEndpoint[Any, IO]] =
   //   SwaggerInterpreter().fromServerEndpoints(allEndpoints, info)
   private val swaggerEndpoints: List[ServerEndpoint[Any, IO]] =
     SwaggerInterpreter().fromEndpoints(allEndpoints, info)
+
   val swaggerRoute: HttpRoutes[IO] =
     Http4sServerInterpreter[IO]().toRoutes(swaggerEndpoints)
+
 }

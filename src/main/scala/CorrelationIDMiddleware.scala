@@ -1,7 +1,8 @@
-import org.http4s._
 import cats.data.OptionT
 import cats.effect._
 import cats.effect.std.Supervisor
+
+import org.http4s._
 
 object CorrelationIDMiddleware {
 //   def correlationIdMiddleware(routes: HttpRoutes[IO]): HttpRoutes[IO] =
@@ -54,25 +55,21 @@ object CorrelationIDMiddleware {
 
 //   val httpApp = correlationIdMiddleware(routes).orNotFound
 
-
-
 // implement a resource-safe imperative client for :
-    //1 . sending data over a web socket connection
-    //2. so that releasing the client resource also shuts down all the underlying connections
+  // 1 . sending data over a web socket connection
+  // 2. so that releasing the client resource also shuts down all the underlying connections
 
+  trait WebSocketClient {
+    def sendMessage(msg: String): IO[Unit]
+  }
 
-    trait WebSocketClient{
-        def sendMessage(msg:String):IO[Unit]
-    }
+  val clientResource: Resource[IO, WebSocketClient] = ???
 
-    val clientResource:Resource[IO,WebSocketClient] = ???
-
-clientResource.use{ client=>
+  clientResource.use { client =>
     client.sendMessage("Helllo Scala conf")
 
-}
+  }
 
-
-Supervisor
+  Supervisor
 
 }

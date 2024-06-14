@@ -1,15 +1,18 @@
 package configs
-import pureconfig.ConfigReader
+
 import pureconfig.generic.semiauto.deriveReader
+import pureconfig.ConfigReader
+
 case class RedisConfig(
-    host: String,
-    port: Int,
-    password: String,
-    database: Int
+  host: String,
+  port: Int,
+  password: String,
+  database: Int
 )
 
 object RedisConfig {
 
   implicit val redisConfigReader: ConfigReader[RedisConfig] =
     deriveReader[RedisConfig]
+
 }
