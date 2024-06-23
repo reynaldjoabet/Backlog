@@ -33,7 +33,7 @@ def http4s(artifact: String): ModuleID =
 def tapir(artifact: String) =
   "com.softwaremill.sttp.tapir" %% s"tapir-$artifact" % "1.9.10"
 
-val prometheusMetrics = "org.http4s" %% "http4s-prometheus-metrics" % "0.24.6"
+val prometheusMetrics = "org.http4s" %% "http4s-prometheus-metrics" % "0.24.7"
 
 val circeGenericExtras = circe("generic-extras")
 val circeCore          = circe("core")
