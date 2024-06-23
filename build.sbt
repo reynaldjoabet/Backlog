@@ -31,7 +31,7 @@ def http4s(artifact: String): ModuleID =
   "org.http4s" %% s"http4s-$artifact" % http4sVersion
 
 def tapir(artifact: String) =
-  "com.softwaremill.sttp.tapir" %% s"tapir-$artifact" % "1.9.10"
+  "com.softwaremill.sttp.tapir" %% s"tapir-$artifact" % "1.9.11"
 
 val prometheusMetrics = "org.http4s" %% "http4s-prometheus-metrics" % "0.24.6"
 
